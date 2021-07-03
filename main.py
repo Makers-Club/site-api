@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
 from flask_cors import (CORS, cross_origin)
 from os import environ
 from uuid import uuid4
@@ -29,10 +29,22 @@ migrate = Migrate(app, db)
 
 
 app.register_blueprint(users)
+app.register_blueprint(sessions)
+
+
+@app.before_request
+def before():
+    '''from models.auth.auth_client import AuthClient
+    if not request.url.endswith('/status'):
+        if not AuthClient.trusted_client(request):
+            abort(401)'''
+    '''logged_in_user = Auth.logged_in_user
+    session = request.cookies.get('session')
+    setattr(request, 'current_user', logged_in_user(session))'''
 
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
+@app.route('/status', methods=['GET'], strict_slashes=False)
 def index():
     return jsonify({
         'status': 'OK'
@@ -57,4 +69,4 @@ def Unauthorized(error) -> str:
     return jsonify({"error": "Unauthorized"}), 401
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8081, debug=True)

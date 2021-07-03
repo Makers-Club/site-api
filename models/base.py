@@ -43,6 +43,27 @@ class Base():
         from models.storage import DB
         return DB.get_all(cls)
     
+    @classmethod
+    def get_where(cls, attribute, value):
+        from models.storage import DB
+        objects = cls.get_all()
+        matches = []
+        for object in objects:
+            if object.__dict__[attribute] == value:
+                matches.append(object)
+        return matches
+
+    @classmethod
+    def get_all_list_of_dicts(cls):
+        objects = cls.get_all()
+        if not objects:
+            return None
+        dict_reprs = []
+        for object in objects:
+            del object._sa_instance_state
+            dict_reprs.append(object.to_dict())
+        return dict_reprs
+    
     def to_dict(self):
         dict_repr = self.__dict__
         if 'password' in dict_repr:
