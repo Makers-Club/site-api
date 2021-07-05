@@ -18,7 +18,6 @@ class User(Base, declarative_base):
     # TODO: See Issue #68
     def __init__(self, *args, **kwargs):
         super().__init__()
-        print([x for x in kwargs.items()])
         self.id = kwargs.get('id') # or str(uuid4())
         self.email = kwargs.get('email') # or str(uuid4())
         self.name = kwargs.get('name') or kwargs.get('login') # or str(uuid4())

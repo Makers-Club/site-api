@@ -37,7 +37,7 @@ class MySQLClient():
         if not result or not result.first():
             return None
         return result.first()
-    
+
     def get_by_handle(self, cls: type, handle: str):
         result = self.__session.query(cls).filter_by(handle=handle)
         if not result or not result.first():

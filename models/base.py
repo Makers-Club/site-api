@@ -49,7 +49,11 @@ class Base():
         objects = cls.get_all()
         matches = []
         for object in objects:
-            if object.__dict__[attribute] == value:
+            obj_attr = object.__dict__[attribute]
+            if isinstance(obj_attr, str):
+                obj_attr = obj_attr.lower()
+            # next line ensures it's comparing them as the same type
+            if obj_attr == type(obj_attr)(value):
                 matches.append(object)
         return matches
 
