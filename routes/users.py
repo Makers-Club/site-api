@@ -1,6 +1,7 @@
 from routes import users
 from flask import jsonify, request
 from models.user import User
+from models.auth.authenticate_api_token import AuthAPI
 
 '''
 The sub-functions here will be 'hidden' inside the User model after refactoring
@@ -16,23 +17,14 @@ from being able to commit changes to the DB.
 
 # GET -------------------
 
-def get_all_user_dicts():
-    user_objects = User.get_all()
-    if not user_objects:
-        return None
-    user_dicts = []
-    for user in user_objects:
-        print(user.to_dict()['handle'])
-        del user._sa_instance_state
-        user_dicts.append(user.to_dict())
-    return user_dicts
 
 
 @users.route('/', methods=['GET', 'POST'], strict_slashes=False)
+@AuthAPI.trusted_client
 def all():
     if request.method == 'POST':
         return create_new_user(request)
-    users = get_all_user_dicts()
+    users = User.get_all_list_of_dicts()
     if not users:
         return jsonify({
             'status': 'error',
@@ -45,7 +37,11 @@ def all():
 
 @users.route('/<id>', methods=['DELETE'], strict_slashes=False)
 @users.route('/<int:id>', methods=['GET'], strict_slashes=False)
-def by_id(id):
+@users.route('/<handle>', methods=['GET'], strict_slashes=False)
+@AuthAPI.trusted_client
+def by_id(id=None, handle=None):
+    if handle:
+        return get_by_handle(handle)
     user = User.get_by_id(id)
     if not user:
         return jsonify({
@@ -60,8 +56,7 @@ def by_id(id):
         'user': user.to_dict()
     }), 200
 
-@users.route('/<handle>', methods=['GET'], strict_slashes=False)
-def by_handle(handle):
+def get_by_handle(handle):
     user = User.get_by_handle(handle)
     if not user:
         return jsonify({
@@ -70,33 +65,29 @@ def by_handle(handle):
         }), 404
     del user._sa_instance_state
     return jsonify({
+        'status': 'OK',
         'user': user.to_dict()
     }), 200
 
 
-def get_user_dicts_by_attribute(attribute, value):
-    users = get_all_user_dicts()
-    matches = []
-    for user in users:
-        # lowercase makes sense for everything except access token where case matters
-
-        if str(user.get(attribute)).lower() == value:
-            matches.append(user)
-    return matches
-
 @users.route('/<attribute>/<value>', methods=['GET'], strict_slashes=False)
+@AuthAPI.trusted_client
 def by_attribute(attribute, value, new_value=None):
-    if value != 'access_token':
+    if value != 'access_token' and isinstance(value, str):
         value = str(value).lower()
-    users = get_user_dicts_by_attribute(str(attribute.lower()), value)
+    users = User.get_where(attribute.lower(), value)
     if not users:
             return jsonify({
                 'status': 'error',
                 'user': None
             }), 404
+    user_dicts = []
+    for user in users:
+        del user._sa_instance_state
+        user_dicts.append(user.to_dict())
     return jsonify({
         'status': 'OK',
-        'users': users
+        'users': user_dicts
     }), 200
     
 
@@ -107,7 +98,8 @@ def sql_injection(attribute, value):
     # just creating this, which does nothing now, so we don't forget
     return False
 
-@users.route('/<id>/<attribute>/<value>', methods=['GET'], strict_slashes=False)
+@users.route('/<id>/<attribute>/<value>', methods=['PUT'], strict_slashes=False)
+@AuthAPI.trusted_client
 def update(id, attribute, value):
     user = User.get_by_id(id)
     if not user or sql_injection(attribute, value):

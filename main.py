@@ -8,6 +8,7 @@ from models.storage import DB
 from routes import *
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from models.auth.authenticate_api_token import AuthAPI
 
 
 DB_MIGRATION_URI = DB._MySQLClient__engine.url
@@ -34,17 +35,13 @@ app.register_blueprint(sessions)
 
 @app.before_request
 def before():
-    '''from models.auth.auth_client import AuthClient
-    if not request.url.endswith('/status'):
-        if not AuthClient.trusted_client(request):
-            abort(401)'''
-    '''logged_in_user = Auth.logged_in_user
-    session = request.cookies.get('session')
-    setattr(request, 'current_user', logged_in_user(session))'''
+    from models.auth.authenticate_api_token import AuthAPI
+    from flask import request
+    request.client = AuthAPI.trusted(request)
 
 
-
-@app.route('/status', methods=['GET'], strict_slashes=False)
+@app.route('/', methods=['GET'], strict_slashes=False)
+@AuthAPI.trusted_client
 def index():
     return jsonify({
         'status': 'OK'

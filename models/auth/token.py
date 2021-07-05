@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Float, Integer
-from models.base import Base
+from models.base import Base, declarative_base
 from uuid import uuid4
 
-class Token(Base, db.Model):
+class Token(Base, declarative_base):
     __tablename__ = 'api_tokens'
     id = Column(String(128), nullable=False, primary_key=True)
     user_name = Column(String(128), nullable=False)

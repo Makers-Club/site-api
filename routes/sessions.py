@@ -1,12 +1,12 @@
 from routes import sessions
 from flask import jsonify, request
 from models.auth.session import Session
-
-
+from models.auth.authenticate_api_token import AuthAPI
 
 
 
 @sessions.route('/', methods=['GET'], strict_slashes=False)
+@AuthAPI.trusted_client
 def get_all_sessions():
     sessions = Session.get_all_list_of_dicts()
     if not sessions:
@@ -20,6 +20,7 @@ def get_all_sessions():
         }
 
 @sessions.route('/<token>/<user_id>', methods=['POST'], strict_slashes=False)
+@AuthAPI.trusted_client
 def create_session(token, user_id):
     from models.user import User
     # check if user id is real
@@ -46,6 +47,7 @@ def create_session(token, user_id):
 
 @sessions.route('/<cookie>', methods=['GET'], strict_slashes=False)
 @sessions.route('/<user_id>', methods=['DELETE'], strict_slashes=False)
+@AuthAPI.trusted_client
 def check_or_delete_session(cookie=None, user_id=None):
     if request.method == 'GET':
         user_id = Session.user_by_session(cookie)
