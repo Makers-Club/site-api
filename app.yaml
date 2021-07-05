@@ -1,0 +1,17 @@
+runtime: python38
+handlers:
+- url: /.*
+  script: auto
+  secure: always
+  redirect_http_response_code: 301
+  
+env_variables:
+  PRODUCTION: "TRUE"
+  GITHUB_CLIENT_ID: "25ea07bd2d607833d0bd"
+  MYSQL_USER: "root"
+  MYSQL_PWD: "123123"
+  GCP_DEV_URL: "https://8080-b500bb15-7061-4ab6-bca4-a2ed81228a3f.cs-us-central1-mtyn.cloudshell.dev"
+  GITHUB_CLIENT_SECRET: "39da3ad6dfd757263026315bb3df8ad58da582a1"
+  MYSQL_TEST_DB: "development"
+  MYSQL_PRODUCTION_DB: "development"
+  GITHUB_CALLBACK_URL: "https://maker-teams-site.uc.r.appspot.com/auth/github_callback"
