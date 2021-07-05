@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cloud_sql_proxy -instances=maker-teams-site:us-central1:mt-mysql-db=tcp:3306

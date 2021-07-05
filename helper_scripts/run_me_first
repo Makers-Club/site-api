@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Create virtual environment folder and download dependencies
+mkdir -p ~/envs
+virtualenv ~/envs/${PWD##*/}
+source ~/envs/${PWD##*/}/bin/activate
+pip install -r requirements.txt
+
+# Downloads the Cloud SQL proxy file and place in /usr/local/bin
+echo "Downloading cloud_sql_proxy dependency"
+wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+wait
+echo "Moving cloud_sql_proxy to /usr/local/bin"
+sudo mv cloud_sql_proxy /usr/local/bin
+
+# Add startup command as an alias
+echo "adding 'envit' command to ~/.bash_aliases"
+echo "alias envit='source ~/envs/${PWD##*/}/bin/activate'" >> ~/.bash_aliases
+echo "adding 'sqlit' command to ~/.bash_aliases"
+echo "alias sqlit='cloud_sql_proxy -instances=maker-teams-site:us-central1:mt-mysql-db=tcp:3306'" >> ~/.bash_aliases
+alias sqlit='cloud_sql_proxy -instances=maker-teams-site:us-central1:mt-mysql-db=tcp:3306'
+alias envit='source ~/envs/${PWD##*/}/bin/activate'
+clear
+echo -e "\033[1;32mInstall complete.\n\033[0m \nPlease\033[1;32mRELOAD YOUR SHELL\033[0m\n\n Then, you can use the command \033[1;32menvit\033[0m to activate your virtual environment.\n\n\033[0;31mAND ON A SEPARATE TERMINAL WINDOW\033[0m, run the command \033[1;32msqlit\033[0m to connect to the database.\033[0m\n\n"

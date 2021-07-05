@@ -1,0 +1,1 @@
+FLASK_APP=saved_models.py flask db upgrade
