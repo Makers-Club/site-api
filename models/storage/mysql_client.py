@@ -23,9 +23,11 @@ class MySQLClient():
     
     def save(self, obj):
         self.__session.add(obj)
-        print(obj.to_dict())
-        self.__session.commit()
-
+        try:
+            self.__session.commit()
+        except:
+            self.__session.rollback()
+            self.__session.commit()
             
     
     def delete(self, obj):
