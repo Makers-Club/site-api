@@ -126,7 +126,11 @@ def update(id, attribute, value):
 # CREATE -------------------
 
 def create_new_user(request):
-    new_user = User(**request.form)
+    if request.form:
+        new_user = User(**request.form)
+    else:
+        print(request.args)
+        new_user = User(*request.args)
     if not new_user:
         return jsonify({
             'status': 'error',

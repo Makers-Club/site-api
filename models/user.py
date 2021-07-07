@@ -18,10 +18,14 @@ class User(Base, declarative_base):
     # TODO: See Issue #68
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.id = kwargs.get('id') # or str(uuid4())
-        self.email = kwargs.get('email') # or str(uuid4())
-        self.name = kwargs.get('name') or kwargs.get('login') # or str(uuid4())
-        self.handle = kwargs.get('login') or kwargs.get('handle')
-        self.avatar_url = kwargs.get('avatar_url')
-        self.access_token = kwargs.get('access_token')
-        self.credits = kwargs.get('credits') or 0
+        if kwargs:
+            print(kwargs, '\nHEYHEYEHEYEHEYEHEYE\n')
+            self.id = kwargs.get('id')
+            self.email = kwargs.get('email')
+            self.name = kwargs.get('name') or kwargs.get('login')
+            self.handle = kwargs.get('login') or kwargs.get('handle')
+            self.avatar_url = kwargs.get('avatar_url')
+            self.access_token = kwargs.get('access_token')
+            self.credits = kwargs.get('credits') or 0
+
+        

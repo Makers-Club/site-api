@@ -14,7 +14,7 @@ def test_create_session(create_user):
     assert response.get('status') == 'OK'
 
 def test_get_session():
-    response = requests.get(f'{main_route()}/sessions/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', data=data()).json()
+    response = requests.get(f'{main_route()}/sessions/987', data=data()).json()
     assert response.get('status') == 'OK'
 
 

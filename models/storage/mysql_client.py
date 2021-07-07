@@ -23,14 +23,25 @@ class MySQLClient():
     
     def save(self, obj):
         self.__session.add(obj)
+        print(obj.to_dict())
         self.__session.commit()
+
+            
     
     def delete(self, obj):
         self.__session.delete(obj)
-        self.__session.commit()
+        try:
+            self.__session.commit()
+        except:
+            self.__session.rollback()
 
     def get_all(self, cls):
-        return self.__session.query(cls).all()
+        try:
+            return self.__session.query(cls).all()
+        except:
+            self.__session.rollback()
+            return None
+        
     
     def get_by_id(self, cls: type, id: str):
         result = self.__session.query(cls).filter_by(id=id)

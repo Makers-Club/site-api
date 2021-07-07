@@ -20,5 +20,7 @@ class AuthAPI():
         from models.auth.token import Token
         id = request.form.get('token')
         if not id:
-            return None
+            id = request.args.get('token')
+            if not id:
+                return None
         return Token.get_by_id(id)
