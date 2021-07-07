@@ -31,6 +31,7 @@ migrate = Migrate(app, db)
 
 app.register_blueprint(users)
 app.register_blueprint(sessions)
+app.register_blueprint(projects)
 
 
 @app.before_request
