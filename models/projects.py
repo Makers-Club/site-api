@@ -54,6 +54,8 @@ class ProjectTemplate(Base, declarative_base):
     description = Column(String(256), nullable=False)
     goals = Column(String(128), nullable=False)
     quiz = Column(String(128), nullable=False)
+    preview_images = Column(String(128))
+    cost = Column(Integer)
     
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -67,6 +69,8 @@ class ProjectTemplate(Base, declarative_base):
             self.description = kwargs.get('description')
             self.goals = kwargs.get('goals')
             self.quiz = kwargs.get('quiz') # quiz table
+            self.preview_images = kwargs.get('preview_images')
+            self.cost = 5
             
 
 
