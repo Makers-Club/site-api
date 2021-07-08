@@ -25,7 +25,8 @@ class MySQLClient():
         self.__session.add(obj)
         try:
             self.__session.commit()
-        except:
+        except Exception as e:
+            print(e)
             self.__session.rollback()
             self.__session.commit()
             

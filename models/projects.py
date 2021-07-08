@@ -1,38 +1,199 @@
-from sqlalchemy import Column, String, Float, Integer
+from sqlalchemy import Column, String, Float, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from models.base import declarative_base, Base
 from uuid import uuid4
 
+def to_many(child_class_name, this_table_name):
+    return relationship(child_class_name, backref=this_table_name)
+
+def to_one(parent_dot_id_str, data_type, len=None):
+    return Column(data_type(len), ForeignKey(parent_dot_id_str))
+
+
+
+class LearningResource(Base, declarative_base):
+    __tablename__ = 'learn_resources'
+    # PARENTS ------------------------------------------------
+    # which type of project this belongs to String(128), ForeignKey('project_templates.id')
+    project_template_id = to_one('project_templates.id', String, 128)
+    # which type of sprint this belongs to
+    sprint_template_id = to_one('sprint_templates.id', String, 128)
+    # which type of task this belongs to
+    task_template_id = to_one('task_templates.id', String, 128)
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    articles = Column(String(128))
+    videos = Column(String(128))
+    external_links = Column(String(128))
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if kwargs:
+            self.id = kwargs.get('id') or str(uuid4())
+            self.articles = kwargs.get('articles')
+            self.videos = kwargs.get('videos')
+            self.external_links = kwargs.get('external_links')
+
+
+
+class ProjectTemplate(Base, declarative_base):
+    __tablename__ = 'project_templates'
+    # CHILDREN -----------------------------------------------
+    # so we can find all of a given type of project users made
+    projects = to_many("Project", "project_templates")
+    # so we know what sprint types are associated with this project type
+    sprint_templates = to_many("SprintTemplate", "project_templates")
+    # learning resources for this at the project level
+    learning_resources = to_many("LearningResource", "project_templates")
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    name = Column(String(128), nullable=False)
+    link = Column(String(128), nullable=False)
+    author = Column(String(128), nullable=False)
+    tech_dependencies = Column(String(128), nullable=False)
+    role_types = Column(String(128), nullable=False)
+    description = Column(String(256), nullable=False)
+    goals = Column(String(128), nullable=False)
+    quiz = Column(String(128), nullable=False)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if kwargs:
+            self.id = kwargs.get('id') or str(uuid4())
+            self.name = kwargs.get('name')
+            self.link = kwargs.get('link')
+            self.author = kwargs.get('author')
+            self.tech_dependencies = kwargs.get('tech_dependencies')
+            self.role_types = kwargs.get('role_types') # list of titles?
+            self.description = kwargs.get('description')
+            self.goals = kwargs.get('goals')
+            self.quiz = kwargs.get('quiz') # quiz table
+            
+
+
 class Project(Base, declarative_base):
     __tablename__ = 'projects'
-    id = Column(String(128), nullable=False, primary_key=True)
-    title = Column(String(128), nullable=False)
-    repository = Column(String(128), nullable=False)
-    description = Column(String(128))
-    preview_images = Column(String(128), nullable=False)
-    videos = Column(String(128), nullable=False)
-    resources = Column(String(128), nullable=False)
-    quizzes = Column(String(128), nullable=False)
-    goals = Column(String(128), nullable=False)
-    dependencies = Column(String(128), nullable=False)
-    progress = Column(String(128), nullable=False)
-    sprints = Column(String(128), nullable=False)
-    cost = Column(Integer)
-
+    # PARENTS ------------------------------------------------
+    # which type of project this is
+    project_template_id = to_one('project_templates.id', String, 128) 
+    # CHILDREN -----------------------------------------------
+    # the actual sprints the user works on in this project
+    sprints = to_many("Sprint", "projects")
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    name = Column(String(128), nullable=False)
+    repository_link = Column(String(128), nullable=False)
+    progress = Column(String(128))
+    quiz_status = Column(String(128))
+    roles = Column(String(128), nullable=False)   
     def __init__(self, *args, **kwargs):
-        super().__init__()  
+        super().__init__()
         if kwargs:
-            self.id = kwargs.get('id') # or str(uuid4())
-            self.title = kwargs.get('title')
-            self.repository = kwargs.get('repository')
-            self.description = kwargs.get('description')
-            self.preview_images = kwargs.get('preview_images')
-            self.videos = kwargs.get('videos')
-            self.resources = kwargs.get('resources')
-            self.quizzes = kwargs.get('quizzes')
-            self.goals = kwargs.get('goals')
-            self.dependencies = kwargs.get('dependencies')
+            self.id = kwargs.get('id') or str(uuid4())
+            self.name = kwargs.get('name')
+            self.repository_link = kwargs.get('repository_link')
             self.progress = kwargs.get('progress')
-            self.sprints = kwargs.get('sprints')
-            self.cost = kwargs.get('cost')
+            self.quiz_status = kwargs.get('quiz_status')
+            self.roles = kwargs.get('roles')
+            
 
+class SprintTemplate(Base, declarative_base):
+    __tablename__ = 'sprint_templates'
+    # PARENTS ------------------------------------------------
+    # which type of project this is in
+    project_template_id = to_one('project_templates.id', String, 128) 
+    # CHILDREN -----------------------------------------------
+    # which actual sprints of this type are being worked on by users
+    sprints = to_many("Sprint", "sprint_templates")
+    # which type of tasks this has in it
+    tasks_templates = to_many("TaskTemplate", "sprint_templates")
+    # learning resources for this at the sprint level
+    learning_resources = to_many("LearningResource", "sprint_templates")
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    number = Column(Integer, nullable=False)
+    tech_dependencies = Column(String(128), nullable=False)
+    role_types = Column(String(128), nullable=False)
+    description = Column(String(256), nullable=False)
+    goals = Column(String(128), nullable=False)
+    quiz = Column(String(128), nullable=False)
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if kwargs:
+            self.id = kwargs.get('id') or str(uuid4())
+            self.number = kwargs.get('number')
+            self.tech_dependencies = kwargs.get('tech_dependencies')
+            self.role_types = kwargs.get('role_types') # list of titles?
+            self.description = kwargs.get('description')
+            self.goals = kwargs.get('goals')
+            self.quiz = kwargs.get('quiz') # quiz table
+
+class Sprint(Base, declarative_base):
+    __tablename__ = 'sprints'
+    # PARENTS ------------------------------------------------
+    # which type of sprint this is in
+    sprint_template_id = to_one('sprint_templates.id', String, 128)
+    # which actual project this is part of
+    project_id = to_one('projects.id', String, 128) 
+    # CHILDREN -----------------------------------------------
+    # which actual tasks it has in it
+    tasks = to_many("Task", "sprints")
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    progress = Column(String(128))
+    quiz_status = Column(String(128))
+    roles = Column(String(128), nullable=False)   
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if kwargs:
+            self.id = kwargs.get('id') or str(uuid4())
+            self.progress = kwargs.get('progress')
+            self.quiz_status = kwargs.get('quiz_status')
+            self.roles = kwargs.get('roles')
+
+
+class TaskTemplate(Base, declarative_base):
+    __tablename__ = 'task_templates'
+    # PARENTS ------------------------------------------------
+    # which type of sprint this is in
+    sprint_template_id = to_one('sprint_templates.id', String, 128)
+    # CHILDREN -----------------------------------------------
+    # which actual tasks it has in it
+    tasks = to_many("Task", "task_templates")
+    # learning resources for this at the task level
+    learning_resources = to_many("LearningResource", "task_templates")
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    number = Column(Integer, nullable=False)
+    tech_dependencies = Column(String(128), nullable=False)
+    role_types = Column(String(128), nullable=False)
+    description = Column(String(256), nullable=False)
+    goals = Column(String(128), nullable=False)
+    tests = Column(String(128), nullable=False)
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if kwargs:
+            self.id = kwargs.get('id') or str(uuid4())
+            self.number = kwargs.get('number')
+            self.tech_dependencies = kwargs.get('tech_dependencies')
+            self.role_types = kwargs.get('role_types') # list of titles?
+            self.description = kwargs.get('description')
+            self.goals = kwargs.get('goals')
+            self.tests = kwargs.get('tests') # quiz table
+
+class Task(Base, declarative_base):
+    __tablename__ = 'tasks'
+    # PARENTS ------------------------------------------------
+    # which type of task this is
+    task_template_id = to_one('task_templates.id', String, 128)
+    # which actual sprint this is in
+    sprint_id = to_one('sprints.id', String, 128)
+    # --------------------------------------------------------
+    id = Column(String(128), primary_key=True)
+    status = Column(String(128), nullable=False)   
+    role = Column(String(128), nullable=False)  
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if kwargs:
+            self.id = kwargs.get('id') or str(uuid4())
+            self.status = kwargs.get('progress')
+            self.role = kwargs.get('role')

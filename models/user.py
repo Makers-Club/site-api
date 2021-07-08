@@ -9,6 +9,7 @@ class User(Base, declarative_base):
     name = Column(String(128), nullable=False)
     handle = Column(String(60), nullable=False)
     avatar_url = Column(String(256), nullable=True)
+    projects = Column(String(256), nullable=True)
     # TODO: We should make these nullable=False. See Issue #67
     credits = Column(Integer())
     access_token = Column(String(128))
@@ -26,6 +27,7 @@ class User(Base, declarative_base):
             self.handle = kwargs.get('login') or kwargs.get('handle')
             self.avatar_url = kwargs.get('avatar_url')
             self.access_token = kwargs.get('access_token')
+            self.projects = kwargs.get('projects')
             self.credits = kwargs.get('credits') or 0
 
         
