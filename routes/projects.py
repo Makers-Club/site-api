@@ -68,16 +68,17 @@ def create_new_project(request):
         sprints.append(sprint)
     new_proj.sprints = sprints
     new_proj.save()
-    del new_proj.project_templates
-    del new_proj.sprints
-    new_proj_dict = new_proj.to_dict()
-    if new_proj_dict.get('_sa_instance_state'):
-        del new_proj_dict['_sa_instance_state']
-    new_proj_dict['sprints'] = [sprint.id for sprint in sprints]
-    print('\n', new_proj_dict, '\n')
+    from copy import copy
+    project_copy = copy(new_proj)
+    del project_copy.project_templates
+    del project_copy.sprints
+    del project_copy._sa_instance_state
+    project_copy.sprint_ids = [sprint.id for sprint in sprints]
+    project_copy_dict = project_copy.to_dict()
+    print(project_copy_dict)
     return jsonify({
         'status': 'OK',
-        f'project': new_proj_dict
+        f'project': project_copy_dict
     }), 200
 
 def create_new_obj(cls_name, cls_name_str, request):

@@ -50,14 +50,15 @@ class MySQLClient():
         
     
     def get_by_id(self, cls: type, id: str):
-        result = self.__session.query(cls).filter_by(id=id)
+        result = self.__session.query(cls).filter_by(id=str(id))
+        print(id, 'in db')
         if not result:
             return None
-        try:
-            return result.first()
-        except Exception:
-            self.__session.rollback()
+        r = result.all()
+        print(r)
+        if not r:
             return None
+        return r[0]
 
     def get_by_handle(self, cls: type, handle: str):
         result = self.__session.query(cls).filter_by(handle=handle)

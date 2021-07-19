@@ -14,6 +14,9 @@ class Base():
         date_format = "%Y-%m-%dT%H:%M:%S.%f"
         for k, v in kwargs.items():
             if k != "__class__":
+                # tried this to get rid of error: 'list' object has no attribute '_sa_adapter'
+                # did not work
+                # setattr(self, str(k), str(v))
                 self.__dict__[k] = v
         
         
@@ -30,6 +33,7 @@ class Base():
     @classmethod
     def get_by_id(cls, id):
         from models.storage import DB
+        print(id)
         return DB.get_by_id(cls, id)
     
     @classmethod

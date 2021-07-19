@@ -8,6 +8,7 @@ class AuthAPI():
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not hasattr(request, 'client') or not request.client:
+                print(request.client)
                 return jsonify({
                     'status': 'error',
                     'message': 'bad or missing API token'
@@ -23,5 +24,5 @@ class AuthAPI():
             id = request.args.get('token')
             if not id:
                 return None
-        print(id)
+        print(id, 'in trusted')
         return Token.get_by_id(id)
