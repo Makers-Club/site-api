@@ -110,14 +110,14 @@ class ProjectTemplate(Base, db.Model):
     learning_resources = to_many("LearningResource", "project_templates")
     # --------------------------------------------------------
     id = Column(String(128), primary_key=True)
-    name = Column(String(128), nullable=False)
-    link = Column(String(128), nullable=False)
-    author = Column(String(128), nullable=False)
-    tech_dependencies = Column(String(128), nullable=False)
-    role_types = Column(String(128), nullable=False)
-    description = Column(String(256), nullable=False)
-    goals = Column(String(128), nullable=False)
-    quiz = Column(String(128), nullable=False)
+    name = Column(String(128))
+    link = Column(String(128))
+    author = Column(String(128))
+    tech_dependencies = Column(String(128))
+    role_types = Column(String(128))
+    description = Column(String(256))
+    goals = Column(String(128))
+    quiz = Column(String(128))
     preview_images = Column(String(128))
     cost = Column(Integer)
     
@@ -148,15 +148,15 @@ class Project(Base, db.Model):
     sprints = to_many("Sprint", "projects")
     # --------------------------------------------------------
     id = Column(String(128), primary_key=True)
-    name = Column(String(128), nullable=False)
-    repository_link = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=True)
+    repository_link = Column(String(128), nullable=True)
     progress = Column(String(128))
     quiz_status = Column(String(128))
-    roles = Column(String(128), nullable=False)   
+    roles = Column(String(128), nullable=True)   
     def __init__(self, *args, **kwargs):
         super().__init__()
         if kwargs:
-            self.id = kwargs.get('id') or str(uuid4())
+            self.id = str(uuid4())
             self.name = kwargs.get('name')
             self.repository_link = kwargs.get('repository_link')
             self.progress = kwargs.get('progress')
@@ -173,17 +173,17 @@ class SprintTemplate(Base, db.Model):
     # which actual sprints of this type are being worked on by users
     sprints = to_many("Sprint", "sprint_templates")
     # which type of tasks this has in it
-    tasks_templates = to_many("TaskTemplate", "sprint_templates")
+    task_templates = to_many("TaskTemplate", "sprint_templates")
     # learning resources for this at the sprint level
     learning_resources = to_many("LearningResource", "sprint_templates")
     # --------------------------------------------------------
     id = Column(String(128), primary_key=True)
-    number = Column(Integer, nullable=False)
-    tech_dependencies = Column(String(128), nullable=False)
-    role_types = Column(String(128), nullable=False)
-    description = Column(String(256), nullable=False)
-    goals = Column(String(128), nullable=False)
-    quiz = Column(String(128), nullable=False)
+    number = Column(Integer)
+    tech_dependencies = Column(String(128))
+    role_types = Column(String(128))
+    description = Column(String(256))
+    goals = Column(String(128))
+    quiz = Column(String(128))
     def __init__(self, *args, **kwargs):
         super().__init__()
         if kwargs:
@@ -209,7 +209,7 @@ class Sprint(Base, db.Model):
     id = Column(String(128), primary_key=True)
     progress = Column(String(128))
     quiz_status = Column(String(128))
-    roles = Column(String(128), nullable=False)   
+    roles = Column(String(128))   
     def __init__(self, *args, **kwargs):
         super().__init__()
         if kwargs:
@@ -231,12 +231,12 @@ class TaskTemplate(Base, db.Model):
     learning_resources = to_many("LearningResource", "task_templates")
     # --------------------------------------------------------
     id = Column(String(128), primary_key=True)
-    number = Column(Integer, nullable=False)
-    tech_dependencies = Column(String(128), nullable=False)
-    role_types = Column(String(128), nullable=False)
-    description = Column(String(256), nullable=False)
-    goals = Column(String(128), nullable=False)
-    tests = Column(String(128), nullable=False)
+    number = Column(Integer)
+    tech_dependencies = Column(String(128))
+    role_types = Column(String(128))
+    description = Column(String(256))
+    goals = Column(String(128))
+    tests = Column(String(128))
     def __init__(self, *args, **kwargs):
         super().__init__()
         if kwargs:
@@ -257,8 +257,8 @@ class Task(Base, db.Model):
     sprint_id = to_one('sprints.id', String, 128)
     # --------------------------------------------------------
     id = Column(String(128), primary_key=True)
-    status = Column(String(128), nullable=False)   
-    role = Column(String(128), nullable=False)  
+    status = Column(String(128))   
+    role = Column(String(128))  
     def __init__(self, *args, **kwargs):
         super().__init__()
         if kwargs:

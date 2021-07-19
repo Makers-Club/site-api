@@ -25,10 +25,13 @@ class MySQLClient():
         self.__session.add(obj)
         try:
             self.__session.commit()
-        except Exception as e:
-            print(e)
+        except Exception:
             self.__session.rollback()
-            self.__session.commit()
+            try:
+                self.__session.commit()
+            except Exception:
+                self.__session.rollback()
+                self.__session.commit()
             
     
     def delete(self, obj):
@@ -48,9 +51,13 @@ class MySQLClient():
     
     def get_by_id(self, cls: type, id: str):
         result = self.__session.query(cls).filter_by(id=id)
-        if not result or not result.first():
+        if not result:
             return None
-        return result.first()
+        try:
+            return result.first()
+        except Exception:
+            self.__session.rollback()
+            return None
 
     def get_by_handle(self, cls: type, handle: str):
         result = self.__session.query(cls).filter_by(handle=handle)
