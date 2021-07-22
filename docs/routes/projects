@@ -1,0 +1,257 @@
+# GET /projects
+{
+  "project": {
+    "id": "dac0150d-ff56-462c-9419-35087c3f16a3", 
+    "name": null, 
+    "progress": null, 
+    "project_template_id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+    "quiz_status": null, 
+    "repository_link": null, 
+    "roles": null
+  }, 
+  "status": "OK"
+}
+makerteams_2021_api@cloudshell:~/site-api (maker-teams-api)$ curl 0.0.0.0:8081/projects?token=123123{
+  "projects": [
+    {
+      "id": "7097f0fd-0095-4d9f-bedd-3ff2414300ea", 
+      "name": null, 
+      "progress": null, 
+      "project_template_id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+      "quiz_status": null, 
+      "repository_link": null, 
+      "roles": null
+    }, 
+    {
+      "created_at": "Thu, 22 Jul 2021 17:21:45 GMT", 
+      "id": "dac0150d-ff56-462c-9419-35087c3f16a3", 
+      "name": null, 
+      "progress": null, 
+      "project_template_id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+      "project_templates": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+      "quiz_status": null, 
+      "repository_link": null, 
+      "roles": null, 
+      "sprints": [
+        "6bcea8c6-0ae6-4443-a2a4-ba4dab96890c", 
+        "075836ac-6eaf-49fc-adce-93358b9b95b4"
+      ]
+    }
+  ], 
+  "status": "OK"
+}
+
+# GET pojects/id
+
+{
+  "project": {
+    "id": "dac0150d-ff56-462c-9419-35087c3f16a3", 
+    "name": null, 
+    "progress": null, 
+    "project_template_id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+    "quiz_status": null, 
+    "repository_link": null, 
+    "roles": null, 
+    "sprints": [
+      "6bcea8c6-0ae6-4443-a2a4-ba4dab96890c", 
+      "075836ac-6eaf-49fc-adce-93358b9b95b4"
+    ]
+  }, 
+  "status": "OK"
+}
+
+# Sprints
+{
+  "sprints": [
+    {
+      "id": "075836ac-6eaf-49fc-adce-93358b9b95b4", 
+      "progress": null, 
+      "project_id": "dac0150d-ff56-462c-9419-35087c3f16a3", 
+      "quiz_status": null, 
+      "roles": null, 
+      "sprint_template_id": "eb5a7d25-e700-4061-93c2-4925a1b7b0af"
+    }, 
+    {
+      "id": "5d05468a-fe1e-4372-99b3-9b2d25557cc9", 
+      "progress": null, 
+      "project_id": "7097f0fd-0095-4d9f-bedd-3ff2414300ea", 
+      "quiz_status": null, 
+      "roles": null, 
+      "sprint_template_id": "c7e15bc3-922e-4454-b81a-c94258f61a1a"
+    }, 
+    {
+      "id": "6bcea8c6-0ae6-4443-a2a4-ba4dab96890c", 
+      "progress": null, 
+      "project_id": "dac0150d-ff56-462c-9419-35087c3f16a3", 
+      "quiz_status": null, 
+      "roles": null, 
+      "sprint_template_id": "c7e15bc3-922e-4454-b81a-c94258f61a1a"
+    }, 
+    {
+      "id": "81a08970-f0c6-485a-a76c-a73a95aea546", 
+      "progress": null, 
+      "project_id": "7097f0fd-0095-4d9f-bedd-3ff2414300ea", 
+      "quiz_status": null, 
+      "roles": null, 
+      "sprint_template_id": "eb5a7d25-e700-4061-93c2-4925a1b7b0af"
+    }
+  ], 
+  "status": "OK"
+}
+
+# Tasks
+{
+  "status": "OK", 
+  "tasks": [
+    {
+      "id": "463939bc-cad2-4c79-8c89-d0c3792638ef", 
+      "role": null, 
+      "sprint_id": "6bcea8c6-0ae6-4443-a2a4-ba4dab96890c", 
+      "status": null, 
+      "task_template_id": "2c2edb73-85c2-4280-a727-6c5a1f46fd8a"
+    }, 
+    {
+      "id": "574a242f-6fbe-4565-811f-876b372c3433", 
+      "role": null, 
+      "sprint_id": "075836ac-6eaf-49fc-adce-93358b9b95b4", 
+      "status": null, 
+      "task_template_id": "ad8b9f41-076b-491a-a51e-405f93062fc5"
+    }, 
+    {
+      "id": "6a0d93a5-9c60-4c82-84e6-6b24fa922ced", 
+      "role": null, 
+      "sprint_id": "5d05468a-fe1e-4372-99b3-9b2d25557cc9", 
+      "status": null, 
+      "task_template_id": "2c2edb73-85c2-4280-a727-6c5a1f46fd8a"
+    }, 
+    {
+      "id": "a37a9326-b492-4e63-b6a6-6d03cecbb15a", 
+      "role": null, 
+      "sprint_id": "075836ac-6eaf-49fc-adce-93358b9b95b4", 
+      "status": null, 
+      "task_template_id": "e61b3fe8-5388-4ee0-93bc-860d90a0ea76"
+    }, 
+    {
+      "id": "a4e78194-51f2-44ca-a5ff-4cba27725c52", 
+      "role": null, 
+      "sprint_id": "5d05468a-fe1e-4372-99b3-9b2d25557cc9", 
+      "status": null, 
+      "task_template_id": "2c186243-909c-40ff-8952-2db7d39ff410"
+    }, 
+    {
+      "id": "afd1896b-b0bb-411c-99da-b4df4b92942b", 
+      "role": null, 
+      "sprint_id": "81a08970-f0c6-485a-a76c-a73a95aea546", 
+      "status": null, 
+      "task_template_id": "e61b3fe8-5388-4ee0-93bc-860d90a0ea76"
+    }, 
+    {
+      "id": "da4f4b1a-1465-493a-a749-713e32434290", 
+      "role": null, 
+      "sprint_id": "6bcea8c6-0ae6-4443-a2a4-ba4dab96890c", 
+      "status": null, 
+      "task_template_id": "2c186243-909c-40ff-8952-2db7d39ff410"
+    }, 
+    {
+      "id": "f77a2707-f700-49d9-b646-1ffb5ed5a815", 
+      "role": null, 
+      "sprint_id": "81a08970-f0c6-485a-a76c-a73a95aea546", 
+      "status": null, 
+      "task_template_id": "ad8b9f41-076b-491a-a51e-405f93062fc5"
+    }
+  ]
+}
+
+# Project Templates
+{
+  "project_templates": [
+    {
+      "author": "Rmolimock", 
+      "cost": 3, 
+      "description": "This site was built to commemorate businesses lost during the Tulsa Massacre of 1921. Each web page featured here was built by a middle school student, learning to code through Urban Coders Guild.", 
+      "goals": null, 
+      "id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+      "link": "https://historicblackwallstreet.com", 
+      "name": "HistoricBlackWallstreet.com", 
+      "preview_images": "https://i.imgur.com/cIcyWGC.png", 
+      "quiz": null, 
+      "role_types": null, 
+      "tech_dependencies": null
+    }
+  ], 
+  "status": "OK"
+}
+
+# Sprint Templates
+{
+  "sprint_templates": [
+    {
+      "description": null, 
+      "goals": null, 
+      "id": "c7e15bc3-922e-4454-b81a-c94258f61a1a", 
+      "number": 1, 
+      "project_template_id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+      "quiz": null, 
+      "role_types": null, 
+      "tech_dependencies": null
+    }, 
+    {
+      "description": null, 
+      "goals": null, 
+      "id": "eb5a7d25-e700-4061-93c2-4925a1b7b0af", 
+      "number": 0, 
+      "project_template_id": "4cca0b4b-e745-40e2-b1dd-ee3e8e6ec577", 
+      "quiz": null, 
+      "role_types": null, 
+      "tech_dependencies": null
+    }
+  ], 
+  "status": "OK"
+}
+
+# Task Templates
+{
+  "status": "OK", 
+  "task_templates": [
+    {
+      "description": null, 
+      "goals": null, 
+      "id": "2c186243-909c-40ff-8952-2db7d39ff410", 
+      "number": 2, 
+      "role_types": null, 
+      "sprint_template_id": "c7e15bc3-922e-4454-b81a-c94258f61a1a", 
+      "tech_dependencies": null, 
+      "tests": null
+    }, 
+    {
+      "description": null, 
+      "goals": null, 
+      "id": "2c2edb73-85c2-4280-a727-6c5a1f46fd8a", 
+      "number": 3, 
+      "role_types": null, 
+      "sprint_template_id": "c7e15bc3-922e-4454-b81a-c94258f61a1a", 
+      "tech_dependencies": null, 
+      "tests": null
+    }, 
+    {
+      "description": null, 
+      "goals": null, 
+      "id": "ad8b9f41-076b-491a-a51e-405f93062fc5", 
+      "number": 0, 
+      "role_types": null, 
+      "sprint_template_id": "eb5a7d25-e700-4061-93c2-4925a1b7b0af", 
+      "tech_dependencies": null, 
+      "tests": null
+    }, 
+    {
+      "description": null, 
+      "goals": null, 
+      "id": "e61b3fe8-5388-4ee0-93bc-860d90a0ea76", 
+      "number": 1, 
+      "role_types": null, 
+      "sprint_template_id": "eb5a7d25-e700-4061-93c2-4925a1b7b0af", 
+      "tech_dependencies": null, 
+      "tests": null
+    }
+  ]
+}
