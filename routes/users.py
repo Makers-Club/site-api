@@ -98,15 +98,32 @@ def sql_injection(attribute, value):
     # just creating this, which does nothing now, so we don't forget
     return False
 
+@users.route('/<id>', methods=['PUT'], strict_slashes=False)
+@AuthAPI.trusted_client
+def update(id):
+    user = User.get_by_id(id)
+    if not user:
+         return jsonify({
+            'status': 'error',
+            'user': None
+        })
+
+    user.update(attrs=request.form)
+    return jsonify({
+        'status': 'OK',
+        'user': user.to_dict()
+    })       
 @users.route('/<id>/<attribute>/<value>', methods=['PUT'], strict_slashes=False)
 @AuthAPI.trusted_client
-def update(id, attribute, value):
+def update_attr(id, attribute, value):
     user = User.get_by_id(id)
     if not user or sql_injection(attribute, value):
         return jsonify({
             'status': 'error',
             'user': None
         })
+    user.update_attr(attribute, value)
+    """        
     # updating an object with obj.__dict__[attribute] = value was not working for me at all
     # I had to resort to saving a dictionary of the obj, deleting it from the db, then recreating it
     user_dict = user.to_dict()
@@ -116,6 +133,7 @@ def update(id, attribute, value):
     # just like if you hard-code int('33') or something like that
     user_dict[attribute] = type(user.__dict__[attribute])(value)
     user = User(**user_dict)
+    """
     user.save() 
     del user._sa_instance_state
     return jsonify({
