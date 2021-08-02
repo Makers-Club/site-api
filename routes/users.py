@@ -70,7 +70,7 @@ def get_by_handle(handle):
     }), 200
 
 
-@users.route('/<attribute>/<value>', methods=['GET'], strict_slashes=False)
+@users.route('/<attribute>/<value>/', methods=['GET'], strict_slashes=False)
 @AuthAPI.trusted_client
 def by_attribute(attribute, value, new_value=None):
     if value != 'access_token' and isinstance(value, str):

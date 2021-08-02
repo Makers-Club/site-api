@@ -13,7 +13,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from sqlalchemy import Column, String, Float, Integer
+from sqlalchemy import Column, String, Float, Integer, Table
 from sqlalchemy.orm import relationship
 from models.base import Base
 from uuid import uuid4
@@ -25,21 +25,48 @@ def to_many(child_class_name, this_table_name):
 def to_one(parent_dot_id_str, data_type, len=None):
     return Column(data_type(len), ForeignKey(parent_dot_id_str))
 
+users_and_projects = Table('association', db.Model.metadata,
+    Column('users_id', ForeignKey('users.id'), primary_key=True),
+    Column('projects_id', ForeignKey('projects.id'), primary_key=True)
+)
+    
+
+'''
+
+class Team(Base, db.Model):
+    __tablename__ = 'teams'
+    name = Column(String(128), nullable=False)
+    id = Column(String(128), primary_key=True)
+    # Children - to many relationships
+    users = to_many("User", "teams")
+
+class Role(Base, db.Model):
+    __tablename__ = 'roles'
+    name = Column(String(128), nullable=False)
+    id = Column(String(128), primary_key=True)
+'''
 
 class User(Base, db.Model):
     __tablename__ = 'users'
+    id = Column(String(128), primary_key=True)
     email = Column(String(128), nullable=False)
     name = Column(String(128), nullable=False)
     handle = Column(String(60), nullable=False)
     avatar_url = Column(String(256), nullable=True)
-    projects = Column(String(256), nullable=True)
-    # TODO: We should make these nullable=False. See Issue #67
     credits = Column(Integer(), nullable=False)
     access_token = Column(String(128))
+    # Children - to many relationships
+    my_projects = relationship(
+        "Project",
+        secondary=users_and_projects,
+        back_populates="my_users")
+    #teams = to_many("Team", "users")
+    #roles_seeking = to_many("Role", "users")
+    interests = Column(String(256), nullable=True)
+    about_me = Column(String(256), nullable=True)
+    culture = Column(String(256), nullable=True)
+    title = Column(String(256), nullable=True)
 
-    # * If you get another failure, Russ, save the error msg and share it on
-    # * issue #68, then uncomment the old str(uuid4())'s and try again
-    # TODO: See Issue #68
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.id = kwargs.get('id') # or str(uuid4())
@@ -48,8 +75,11 @@ class User(Base, db.Model):
         self.handle = kwargs.get('login')
         self.avatar_url = kwargs.get('avatar_url')
         self.access_token = kwargs.get('access_token')
-        self.projects = kwargs.get('projects')
         self.credits = 0
+        self.interests = kwargs.get('interests')
+        self.about_me = kwargs.get('about_me')
+        self.culture = kwargs.get('culture')
+        self.title = kwargs.get('title')
 
 
 class Session(Base, db.Model):
@@ -146,6 +176,11 @@ class Project(Base, db.Model):
     # CHILDREN -----------------------------------------------
     # the actual sprints the user works on in this project
     sprints = to_many("Sprint", "projects")
+    # MANY TO MANY
+    my_users = relationship(
+        "User",
+        secondary=users_and_projects,
+        back_populates="my_projects")
     # --------------------------------------------------------
     id = Column(String(128), primary_key=True)
     name = Column(String(128), nullable=True)

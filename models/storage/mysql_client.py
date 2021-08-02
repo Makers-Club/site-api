@@ -44,6 +44,7 @@ class MySQLClient():
     def get_all(self, cls):
         try:
             return self.__session.query(cls).all()
+            
         except:
             self.__session.rollback()
             return None
@@ -51,18 +52,22 @@ class MySQLClient():
     
     def get_by_id(self, cls: type, id: str):
         result = self.__session.query(cls).filter_by(id=str(id))
-        print(id, 'in db')
         if not result:
             return None
-        r = result.all()
-        print(r)
-        if not r:
+        try:
+            return result.first()
+        except Exception:
+            self.__session.rollback()
             return None
-        return r[0]
+
 
     def get_by_handle(self, cls: type, handle: str):
         result = self.__session.query(cls).filter_by(handle=handle)
-        if not result or not result.first():
+        if not result:
             return None
-        return result.first()
+        try:
+            return result.first()
+        except Exception:
+            self.__session.rollback()
+            return None
     

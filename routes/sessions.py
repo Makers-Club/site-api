@@ -39,10 +39,14 @@ def create_session(token, user_id):
             'session': None
         })
     session.save()
-    del session._sa_instance_state
+    session_dict = {
+        'created_at': str(session.created_at),
+        'user_id': session.user_id,
+        'id': session.id
+    }
     return jsonify({
         'status': 'OK',
-        'session': session.to_dict()
+        'session': session_dict
     })
 
 @sessions.route('/<cookie>', methods=['GET'], strict_slashes=False)
@@ -63,10 +67,19 @@ def check_or_delete_session(cookie=None, user_id=None):
                 'status': 'error',
                 'user': None
             })
-        del user._sa_instance_state
+        user_dict = {
+            'id': user.id,
+            'email': user.email,
+            'credits': user.credits,
+            'name': user.name,
+            'handle': user.handle,
+            'avatar_url': user.avatar_url,
+            'access_token': user.access_token,
+            'projects': user.projects
+        }
         return jsonify({
             'status': 'OK',
-            'user': user.to_dict()
+            'user': user_dict
         })
     if request.method == 'DELETE':
         sessions = Session.sessions_by_user(user_id)

@@ -23,7 +23,6 @@ class Base():
     
     def save(self):
         from models.storage import DB
-        print('saving...')
         DB.save(self)
     
     def delete(self):
@@ -33,7 +32,6 @@ class Base():
     @classmethod
     def get_by_id(cls, id):
         from models.storage import DB
-        print(id)
         return DB.get_by_id(cls, id)
     
     @classmethod
@@ -44,7 +42,11 @@ class Base():
     @classmethod
     def get_all(cls):
         from models.storage import DB
-        return DB.get_all(cls)
+        queries = [DB.get_all(cls) for x in range(10)]
+        for q in queries:
+            if q:
+                return q
+        raise Exception(DB)
     
     @classmethod
     def get_where(cls, attribute, value):
@@ -65,11 +67,20 @@ class Base():
         objects = cls.get_all()
         if not objects:
             return None
-        dict_reprs = []
-        for object in objects:
-            del object._sa_instance_state
-            dict_reprs.append(object.to_dict())
-        return dict_reprs
+        all_obj_dicts = []
+        for obj in objects:
+            obj_dict = {}
+            for k, v in obj.__dict__.items():
+                if hasattr(v, 'id'):
+                    obj_dict[k] = v.id
+                    continue
+                if isinstance(v, list):
+                    obj_dict[k] = [x.id for x in v]
+                    continue
+                if k != '_sa_instance_state':
+                    obj_dict[k] = v
+            all_obj_dicts.append(obj_dict)
+        return all_obj_dicts
     
     def to_dict(self):
         dict_repr = self.__dict__

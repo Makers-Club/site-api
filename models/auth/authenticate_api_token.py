@@ -24,5 +24,4 @@ class AuthAPI():
             id = request.args.get('token')
             if not id:
                 return None
-        print(id, 'in trusted')
         return Token.get_by_id(id)
