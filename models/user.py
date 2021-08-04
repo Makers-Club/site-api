@@ -10,8 +10,8 @@ def to_one(parent_dot_id_str, data_type, len=None):
     return Column(data_type(len), ForeignKey(parent_dot_id_str))
 
 users_and_projects = Table('association', declarative_base.metadata,
-    Column('user_id', ForeignKey('users.id'), primary_key=True),
-    Column('project_id', ForeignKey('projects.id'), primary_key=True)
+    Column('users_id', ForeignKey('users.id'), primary_key=True),
+    Column('projects_id', ForeignKey('projects.id'), primary_key=True)
 )
 
 class User(Base, declarative_base):
