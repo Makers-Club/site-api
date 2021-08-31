@@ -66,6 +66,7 @@ class User(Base, db.Model):
     about_me = Column(String(256), nullable=True)
     culture = Column(String(256), nullable=True)
     title = Column(String(256), nullable=True)
+    roles_of_interest = Column(String(256), nullable=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -80,6 +81,7 @@ class User(Base, db.Model):
         self.about_me = kwargs.get('about_me')
         self.culture = kwargs.get('culture')
         self.title = kwargs.get('title')
+        self.roles_of_interest = kwargs.get('roles_of_interest')
 
 
 class Session(Base, db.Model):

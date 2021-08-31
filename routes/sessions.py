@@ -75,7 +75,8 @@ def check_or_delete_session(cookie=None, user_id=None):
             'handle': user.handle,
             'avatar_url': user.avatar_url,
             'access_token': user.access_token,
-            'projects': user.my_projects
+            'projects': user.my_projects,
+            'roles_of_interest': user.roles_of_interest
         }
         return jsonify({
             'status': 'OK',
