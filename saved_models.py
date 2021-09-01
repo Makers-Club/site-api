@@ -97,15 +97,15 @@ class Session(Base, db.Model):
 
 class Token(Base, db.Model):
     __tablename__ = 'api_tokens'
-    id = Column(String(128), nullable=False, primary_key=True)
-    user_name = Column(String(128), nullable=False)
-    email = Column(String(128), nullable=False)
+    client_id = Column(String(128), nullable=False, primary_key=True)
+    id = Column(String(128), nullable=False)
+    permission = Column(String(60))
 
-    def __init__(self, user_name, email):
+    def __init__(self, client_id, access_token, permission=None):
         super().__init__()
-        self.id = str(uuid4())
-        self.user_name = user_name
-        self.email = email # or str(uuid4())
+        self.client_id = client_id
+        self.id = access_token
+        self.permission = permission or 'user'
 
 class LearningResource(Base, db.Model):
     __tablename__ = 'learn_resources'
