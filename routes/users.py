@@ -82,6 +82,8 @@ def by_id(id=None, handle=None):
         user = remove_private_user_data(user.to_dict())
     else:
         user = user.to_dict()
+    from models.auth.token import Token
+    request.client.delete()
     return jsonify({
         'status': 'OK',
         'user': user
