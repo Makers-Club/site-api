@@ -70,7 +70,7 @@ def by_id(id=None, handle=None):
             'user': None
         }), 404
     if request.method == 'DELETE':
-        if not request.client.client_id == id:
+        if not request.client.client_id == id and not request.permission == 'admin':
             return jsonify({
                 'status': 'error',
                 'message': 'You do not have permission to perform this action.',
@@ -173,6 +173,7 @@ def update_attr(id, attribute, value):
             'user': None
         })
     user.update_attr(attribute, value)
+    print('in here')
     """        
     # updating an object with obj.__dict__[attribute] = value was not working for me at all
     # I had to resort to saving a dictionary of the obj, deleting it from the db, then recreating it
