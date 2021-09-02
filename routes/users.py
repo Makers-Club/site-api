@@ -75,15 +75,15 @@ def by_id(id=None, handle=None):
                 'status': 'error',
                 'message': 'You do not have permission to perform this action.',
                 'user': None
-            })        
+            })
+        from models.auth.token import Token
+        request.client.delete()
         return delete_user(user)
     del user._sa_instance_state
-    if not str(id) == request.client.client_id:
+    if not str(id) == request.client.client_id and not request.permission == 'admin':
         user = remove_private_user_data(user.to_dict())
     else:
         user = user.to_dict()
-    from models.auth.token import Token
-    request.client.delete()
     return jsonify({
         'status': 'OK',
         'user': user
