@@ -7,6 +7,7 @@ from models.auth.authenticate_api_token import AuthAPI
 
 @sessions.route('/', methods=['GET'], strict_slashes=False)
 @AuthAPI.trusted_client
+@AuthAPI.admin_only
 def get_all_sessions():
     sessions = Session.get_all_list_of_dicts()
     if not sessions:
@@ -21,6 +22,7 @@ def get_all_sessions():
 
 @sessions.route('/<token>/<user_id>', methods=['POST'], strict_slashes=False)
 @AuthAPI.trusted_client
+@AuthAPI.admin_only
 def create_session(token, user_id):
     from models.user import User
     # check if user id is real
@@ -51,6 +53,7 @@ def create_session(token, user_id):
 
 @sessions.route('/<cookie>', methods=['GET'], strict_slashes=False)
 @sessions.route('/<user_id>', methods=['DELETE'], strict_slashes=False)
+@AuthAPI.admin_only
 @AuthAPI.trusted_client
 def check_or_delete_session(cookie=None, user_id=None):
     if request.method == 'GET':

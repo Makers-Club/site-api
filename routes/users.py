@@ -17,12 +17,31 @@ from being able to commit changes to the DB.
 
 # GET -------------------
 
+def remove_private_user_data(user, users=None):
+    if not users:
+        del user['access_token']
+        del user['credits']
+        del user['email']
+        del user['id']
+        return user
+    for user in users:
+        del user['access_token']
+        del user['credits']
+        del user['email']
+        del user['id']
+    return users
 
 
 @users.route('/', methods=['GET', 'POST'], strict_slashes=False)
 @AuthAPI.trusted_client
 def all():
     if request.method == 'POST':
+        if not request.permission == 'admin':
+            return jsonify({
+            'status': 'error',
+            'message': 'You do not have permission to perform that action.',
+            'users': None
+            }), 500
         return create_new_user(request)
     users = User.get_all_list_of_dicts()
     if not users:
@@ -30,6 +49,8 @@ def all():
             'status': 'error',
             'users': None
             }), 500
+    if request.permission != 'admin':
+        users = remove_private_user_data(1, users)
     return {
         'status': 'OK',
         'users': users
@@ -49,11 +70,21 @@ def by_id(id=None, handle=None):
             'user': None
         }), 404
     if request.method == 'DELETE':
+        if not request.client.client_id == id:
+            return jsonify({
+                'status': 'error',
+                'message': 'You do not have permission to perform this action.',
+                'user': None
+            })        
         return delete_user(user)
     del user._sa_instance_state
+    if not str(id) == request.client.client_id:
+        user = remove_private_user_data(user.to_dict())
+    else:
+        user = user.to_dict()
     return jsonify({
-            'status': 'OK',
-        'user': user.to_dict()
+        'status': 'OK',
+        'user': user
     }), 200
 
 def get_by_handle(handle):
@@ -64,9 +95,15 @@ def get_by_handle(handle):
             'user': None
         }), 404
     del user._sa_instance_state
+    from models.auth.token import Token
+    client_id = request.client.client_id
+    if client_id != user.id:
+        user = remove_private_user_data(user.to_dict())
+    else:
+        user = user.to_dict()
     return jsonify({
         'status': 'OK',
-        'user': user.to_dict()
+        'user': user
     }), 200
 
 
@@ -85,6 +122,8 @@ def by_attribute(attribute, value, new_value=None):
     for user in users:
         del user._sa_instance_state
         user_dicts.append(user.to_dict())
+    if not request.permission == 'admin':
+        user_dicts = remove_private_user_data(1, user_dicts)
     return jsonify({
         'status': 'OK',
         'users': user_dicts
@@ -101,13 +140,18 @@ def sql_injection(attribute, value):
 @users.route('/<id>', methods=['PUT'], strict_slashes=False)
 @AuthAPI.trusted_client
 def update(id):
+    if not request.client.client_id == id:
+        return jsonify({
+            'status': 'error',
+            'message': 'You do not have permission to perform this action.',
+            'user': None
+        })
     user = User.get_by_id(id)
     if not user:
          return jsonify({
             'status': 'error',
             'user': None
         })
-
     user.update(attrs=request.form)
     return jsonify({
         'status': 'OK',
@@ -116,6 +160,12 @@ def update(id):
 @users.route('/<id>/<attribute>/<value>', methods=['PUT'], strict_slashes=False)
 @AuthAPI.trusted_client
 def update_attr(id, attribute, value):
+    if not request.client.client_id == id:
+        return jsonify({
+            'status': 'error',
+            'message': 'You do not have permission to perform this action.',
+            'user': None
+        })
     user = User.get_by_id(id)
     if not user or sql_injection(attribute, value):
         return jsonify({

@@ -8,7 +8,6 @@ class AuthAPI():
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not hasattr(request, 'client') or not request.client:
-                print(request.client)
                 return jsonify({
                     'status': 'error',
                     'message': 'bad or missing API token'
@@ -20,8 +19,8 @@ class AuthAPI():
     def admin_only(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not hasattr(request, 'permission') == 'admin' or not request.permission == 'admin':
-                print(request.client)
+            if not hasattr(request, 'permission') or not request.permission == 'admin':
+                print(request.client.client_id)
                 return jsonify({
                     'status': 'error',
                     'message': 'you do not have permission to do this'
@@ -38,4 +37,8 @@ class AuthAPI():
             if not id:
                 return None
         client = Token.get_by_id(id)
-        return client, client.permission
+        if client:
+            permission = client.permission
+        else:
+            permission = None
+        return client, permission
