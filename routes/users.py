@@ -147,7 +147,6 @@ def create_new_user(request):
     if request.form:
         new_user = User(**request.form)
     else:
-        print(request.args)
         new_user = User(*request.args)
     if not new_user:
         return jsonify({
@@ -156,6 +155,10 @@ def create_new_user(request):
         }), 400
     new_user.save()
     del new_user._sa_instance_state
+    from models.auth.token import Token
+    new_token = Token(new_user.id, new_user.access_token)
+    new_token.save()
+    del new_token._sa_instance_state
     return jsonify({
         'status': 'OK',
         'user': new_user.to_dict()
