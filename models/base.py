@@ -88,15 +88,15 @@ class Base():
             del dict_repr['password']
         return self.__dict__
     
-    def update(self, **attrs):
-        for attribute, value in attrs.items():
-            if attribute in self.__dict__:
-                if value:
-                    value = type(self.__dict__[attribute])(value)
-                setattr(self, attribute, value)
+    def update(self, **obj):
+        for attribute, value in obj.items():
+            if value:
+                value = type(self.__dict__[attribute])(value)
+            setattr(self, attribute, value)
         self.save()
+
     def update_attr(self, attribute, value):
-        self.update(attrs={attribute: value})
+        self.update(obj={attribute: value})
 
 
 

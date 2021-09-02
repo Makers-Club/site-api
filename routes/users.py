@@ -184,7 +184,7 @@ def update_attr(id, attribute, value):
     user_dict[attribute] = type(user.__dict__[attribute])(value)
     user = User(**user_dict)
     """
-    user.save() 
+    user.save()
     del user._sa_instance_state
     return jsonify({
         'status': 'OK',
