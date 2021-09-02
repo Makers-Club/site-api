@@ -89,14 +89,18 @@ class Base():
         return self.__dict__
     
     def update(self, **obj):
+        print(obj)
         for attribute, value in obj.items():
-            if value:
-                value = type(self.__dict__[attribute])(value)
-            setattr(self, attribute, value)
+            if attribute in self.__dict__:
+                if value and self.__dict__[attribute]:
+                    value = type(self.__dict__[attribute])(value)
+                setattr(self, attribute, value)
+            elif attribute == 'roles_of_interest':
+                setattr(self, attribute, value)
         self.save()
 
     def update_attr(self, attribute, value):
-        self.update(obj={attribute: value})
+        self.update(**{attribute: value})
 
 
 
