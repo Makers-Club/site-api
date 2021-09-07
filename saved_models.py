@@ -13,7 +13,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from sqlalchemy import Column, String, Float, Integer, Table
+from sqlalchemy import Column, String, Float, Integer, Table, Boolean
 from sqlalchemy.orm import relationship
 from models.base import Base
 from uuid import uuid4
@@ -304,4 +304,16 @@ class Task(Base, db.Model):
             self.role = kwargs.get('role')
 
 
+class Notification(Base, db.Model):
+    __tablename__ = 'notifications'
+    id = Column(String(128), primary_key=True)
+    user_id = Column(String(128), nullable=False)
+    msg = Column(String(256), nullable=False)
+    is_read = Column(Boolean, default=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.id = kwargs.get('id') # or str(uuid4())
+        self.user_id = kwargs.get('user_id') # or str(uuid4())
+        self.msg = kwargs.get('msg')
+        self.is_read = kwargs.get('is_read')
