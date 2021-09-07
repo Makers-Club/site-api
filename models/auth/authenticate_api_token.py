@@ -35,7 +35,7 @@ class AuthAPI():
         if not id:
             id = request.args.get('token')
             if not id:
-                return None
+                return (None, None)
         client = Token.get_by_id(id)
         if client:
             permission = client.permission
