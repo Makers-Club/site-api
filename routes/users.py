@@ -197,6 +197,11 @@ def update_attr(id, attribute, value):
 # CREATE -------------------
 
 def create_new_user(request):
+    if not 'id' in request.form and not 'id' in request.args:
+        return jsonify({
+            'status': 'error',
+            'message': 'new user data was bad'
+        }), 400
     if request.form:
         new_user = User(**request.form)
     else:
@@ -207,6 +212,7 @@ def create_new_user(request):
             'message': 'new user data was bad'
         }), 400
     new_user.save()
+    print('saved new user')
     del new_user._sa_instance_state
     from models.auth.token import Token
     new_token = Token(new_user.id, new_user.access_token)

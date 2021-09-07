@@ -17,7 +17,7 @@ users_and_projects = Table('association', declarative_base.metadata,
 class User(Base, declarative_base):
     __tablename__ = 'users'
     id = Column(String(128), primary_key=True)
-    email = Column(String(128), nullable=False)
+    email = Column(String(128), nullable=True)
     name = Column(String(128), nullable=False)
     handle = Column(String(60), nullable=False)
     avatar_url = Column(String(256), nullable=True)

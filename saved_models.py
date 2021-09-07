@@ -49,7 +49,7 @@ class Role(Base, db.Model):
 class User(Base, db.Model):
     __tablename__ = 'users'
     id = Column(String(128), primary_key=True)
-    email = Column(String(128), nullable=False)
+    email = Column(String(128), nullable=True)
     name = Column(String(128), nullable=False)
     handle = Column(String(60), nullable=False)
     avatar_url = Column(String(256), nullable=True)
