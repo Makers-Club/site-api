@@ -20,7 +20,6 @@ class AuthAPI():
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not hasattr(request, 'permission') or not request.permission == 'admin':
-                print(request.client.client_id)
                 return jsonify({
                     'status': 'error',
                     'message': 'you do not have permission to do this'

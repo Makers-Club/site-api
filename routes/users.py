@@ -42,6 +42,7 @@ def all():
             'message': 'You do not have permission to perform that action.',
             'users': None
             }), 500
+        print('IN POST')
         return create_new_user(request)
     users = User.get_all_list_of_dicts()
     if not users:
@@ -77,7 +78,12 @@ def by_id(id=None, handle=None):
                 'user': None
             })
         from models.auth.token import Token
-        request.client.delete()
+        if not request.permission == 'admin':
+            request.client.delete()
+        else:
+            users_token = Token.get_where('client_id', id)
+            if users_token:
+                users_token[0].delete()
         return delete_user(user)
     del user._sa_instance_state
     if not str(id) == request.client.client_id and not request.permission == 'admin':
@@ -175,7 +181,6 @@ def update_attr(id, attribute, value):
             'user': None
         })
     user.update_attr(attribute, value)
-    print('in here')
     """        
     # updating an object with obj.__dict__[attribute] = value was not working for me at all
     # I had to resort to saving a dictionary of the obj, deleting it from the db, then recreating it
@@ -197,6 +202,11 @@ def update_attr(id, attribute, value):
 # CREATE -------------------
 
 def create_new_user(request):
+    if not 'id' in request.form and not 'id' in request.args:
+        return jsonify({
+            'status': 'error',
+            'message': 'new user data was bad'
+        }), 400
     if request.form:
         new_user = User(**request.form)
     else:
@@ -207,6 +217,7 @@ def create_new_user(request):
             'message': 'new user data was bad'
         }), 400
     new_user.save()
+    print('NEW USER CREATED')
     del new_user._sa_instance_state
     from models.auth.token import Token
     new_token = Token(new_user.id, new_user.access_token)
