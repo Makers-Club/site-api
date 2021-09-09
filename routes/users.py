@@ -217,11 +217,7 @@ def create_new_user(request):
             'message': 'new user data was bad'
         }), 400
     new_user.save()
-<<<<<<< HEAD
     print('NEW USER CREATED')
-=======
-    print('saved new user')
->>>>>>> f4b6d0636d7456fad81dc7f2b7ed9fb54a619d0d
     del new_user._sa_instance_state
     from models.auth.token import Token
     new_token = Token(new_user.id, new_user.access_token)
