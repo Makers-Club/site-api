@@ -2,6 +2,7 @@ from routes import notifications
 from flask import jsonify, request
 from models.notification import Notification
 from models.auth.authenticate_api_token import AuthAPI
+from base64 import b64decode
 
 @notifications.route('/<user_id>', methods=['GET'], strict_slashes=False)
 def get_by_user_id(user_id):
@@ -13,6 +14,11 @@ def get_by_user_id(user_id):
 
     results = list(map(lambda item: item.to_dict(), results))
     for item in results:
+        b64_msg = item['msg']
+        b64_bytes = b64_msg.encode('ascii')
+        m_bytes = b64decode(b64_bytes)
+        message = m_bytes.decode('ascii')
+        item['msg'] = message
         del item['_sa_instance_state']
 
     return jsonify({
@@ -27,22 +33,20 @@ def index(notification_id):
     """  """
     try:
         notification = Notification.get_where("id", notification_id)
+        if notification == []:
+            notification = None        
     except Exception as e:
         print(f"Exception was raised {e}")
         notification = None
 
-    query_string = request.query_string.decode('utf-8')
-    data = {}
-    for item in query_string.split('&'):
-        key, value = item.split('=')
-        if key == 'token':
-            continue
-        data[key] = value.replace('-', ' ')
-    data['is_read'] = False
+    data = request.args.to_dict()
 
     if request.method == "POST":
+        data['msg'] = data['msg'].replace(' ', '+')
+        data['is_read'] = True if data['is_read'] == 'true' else False
         if notification is not None:
             raise Exception('Notification already exists')
+        
         notification = Notification(**data)
         notification.save()
 
