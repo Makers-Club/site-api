@@ -10,7 +10,6 @@ class Notification(Base, declarative_base):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.id = kwargs.get('id') # or str(uuid4())
         self.user_id = kwargs.get('user_id') # or str(uuid4())
         self.msg = kwargs.get('msg')
         self.is_read = kwargs.get('is_read')

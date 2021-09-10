@@ -27,7 +27,7 @@ def get_by_user_id(user_id):
     })
 
 
-@notifications.route('/<notification_id>', methods=['POST', 'DELETE'], strict_slashes=False)
+@notifications.route('/<notification_id>', methods=['DELETE'], strict_slashes=False)
 @AuthAPI.trusted_client
 def index(notification_id):
     """  """
@@ -39,29 +39,24 @@ def index(notification_id):
         print(f"Exception was raised {e}")
         notification = None
 
+    if notification is None:
+        raise Exception('Notification not found')
+    notification[0].delete()
+    return jsonify({"status": "OK", "message": "Notification Deleted"})
+
+
+@notifications.route('/', methods=['POST'], strict_slashes=False)
+@AuthAPI.trusted_client
+def things():
     data = request.args.to_dict()
 
-    if request.method == "POST":
-        data['msg'] = data['msg'].replace(' ', '+')
-        data['is_read'] = True if data['is_read'] == 'true' else False
-        if notification is not None:
-            raise Exception('Notification already exists')
-        
-        notification = Notification(**data)
-        notification.save()
+    data['msg'] = data['msg'].replace(' ', '+')
+    data['is_read'] = True if data['is_read'] == 'true' else False
 
-        return jsonify({
-            "status": "OK",
-            "data": f"{notification.to_dict()}"
-        })
+    notification = Notification(**data)
+    notification.save()
 
-    if request.method == "DELETE":
-        if notification is None:
-            raise Exception('Notification not found')
-        notification[0].delete()
-        return jsonify({"status": "OK", "message": "Notification Deleted"})
-    
     return jsonify({
         "status": "OK",
-        "query_string": f"{data}"
+        "data": f"{notification.to_dict()}"
     })
