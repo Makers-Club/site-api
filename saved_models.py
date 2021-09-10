@@ -317,3 +317,21 @@ class Notification(Base, db.Model):
         self.user_id = kwargs.get('user_id') # or str(uuid4())
         self.msg = kwargs.get('msg')
         self.is_read = kwargs.get('is_read')
+
+
+class Events(Base, db.Model):
+    __tablename__ = 'events'
+    id = Column(String(128), primary_key=True)
+    user_id = Column(String(128), nullable=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.id = kwargs.get('id')
+        self.user_handle = kwargs.get('user_handle')
+        self.user_link = kwargs.get('user_link')
+        self.sprint_name = kwargs.get('sprint_name')
+        self.sprint_link = kwargs.get('sprint_link')
+        self.project_name = kwargs.get('project_name')
+        self.project_link = kwargs.get('project_link')
+        self.message = kwargs.get('message')
+        self.type = kwargs.get('type')
