@@ -5,6 +5,7 @@ from models.events import Event
 from models.auth.authenticate_api_token import AuthAPI
 
 @events.route('/', methods=['POST', 'GET'], strict_slashes=False)
+@AuthAPI.trusted_client
 def get_or_create_events():
     from models.events import Event
     if request.method == 'POST':
@@ -19,7 +20,7 @@ def get_or_create_events():
         except Exception as e:
             return jsonify({
                 'status': 'error',
-                'message': str(e)
+                'message': str(e) + 'TWO'
             })
         new_event.save()
         print('in HERE')
@@ -35,7 +36,7 @@ def get_or_create_events():
     except Exception as e:
         return jsonify({
             'status': 'error',
-            'message': str(e)
+            'message': str(e) + 'ONE'
         })
     if all_events:
         events = [event.to_dict() for event in all_events]
