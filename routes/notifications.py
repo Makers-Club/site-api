@@ -26,6 +26,22 @@ def get_by_user_id(user_id):
         "results": results
     })
 
+@notifications.route('/<notification_id>', methods=['PUT'], strict_slashes=False)
+@AuthAPI.trusted_client
+def update_read_status(notification_id):
+    n = Notification.get_by_id(notification_id)
+    if not n:
+        return jsonify({
+            'status': 'error',
+            'message': 'notification not found'
+        }), 404
+    n.is_read = True
+    n.save()
+    return jsonify({
+        'status': 'OK',
+        'message': 'is_read updated'
+    })
+
 
 @notifications.route('/<notification_id>', methods=['DELETE'], strict_slashes=False)
 @AuthAPI.trusted_client
@@ -42,6 +58,7 @@ def index(notification_id):
     if notification is None:
         raise Exception('Notification not found')
     notification[0].delete()
+    # We need to respond to failed requests too
     return jsonify({"status": "OK", "message": "Notification Deleted"})
 
 
