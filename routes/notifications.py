@@ -8,7 +8,7 @@ from base64 import b64decode
 
 def update_read_status(user_id):
     try:
-        n = Notification.get_where('user_id', user_id)
+        notifications = Notification.get_where('user_id', user_id)
     except Exception as e:
         return jsonify({
             'status': 'error',
@@ -20,8 +20,9 @@ def update_read_status(user_id):
             'message': 'notification not found'
         }), 404
     try:
-        n.is_read = True
-        n.save()
+        for n in notifications:
+            n.is_read = True
+            n.save()
     except Exception as e:
         return jsonify({
             'status': 'error',
