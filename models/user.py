@@ -34,7 +34,7 @@ class User(Base, declarative_base):
     about_me = Column(String(256), nullable=True)
     culture = Column(String(256), nullable=True)
     title = Column(String(256), nullable=True)
-    roles_of_interest = Column(String(256), nullable=True)    
+    roles_of_interest = Column(String(256), nullable=True)   
 
     def __init__(self, *args, **kwargs):
         super().__init__()

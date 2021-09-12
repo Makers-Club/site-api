@@ -31,14 +31,9 @@ migrate = Migrate(app, db)
 
 app.register_blueprint(users)
 app.register_blueprint(sessions)
-app.register_blueprint(learning_resources)
-app.register_blueprint(project_templates)
 app.register_blueprint(projects)
-app.register_blueprint(sprint_templates)
-app.register_blueprint(sprints)
-app.register_blueprint(task_templates)
-app.register_blueprint(tasks)
 app.register_blueprint(notifications)
+app.register_blueprint(events)
 
 
 

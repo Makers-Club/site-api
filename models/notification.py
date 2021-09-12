@@ -13,3 +13,7 @@ class Notification(Base, declarative_base):
         self.user_id = kwargs.get('user_id') # or str(uuid4())
         self.msg = kwargs.get('msg')
         self.is_read = kwargs.get('is_read')
+
+
+
+
