@@ -4,30 +4,8 @@ from models.notification import Notification
 from models.auth.authenticate_api_token import AuthAPI
 from base64 import b64decode
 
-@notifications.route('/<user_id>', methods=['GET'], strict_slashes=False)
-def get_by_user_id(user_id):
-    """  """
-    try: 
-        results = Notification.get_where('user_id', user_id)
-    except:
-        results = []
 
-    results = list(map(lambda item: item.to_dict(), results))
-    for item in results:
-        b64_msg = item['msg']
-        b64_bytes = b64_msg.encode('ascii')
-        m_bytes = b64decode(b64_bytes)
-        message = m_bytes.decode('ascii')
-        item['msg'] = message
-        del item['_sa_instance_state']
 
-    return jsonify({
-        "status": "OK",
-        "results": results
-    })
-
-@notifications.route('/<user_id>', methods=['PUT'], strict_slashes=False)
-@AuthAPI.trusted_client
 def update_read_status(user_id):
     try:
         n = Notification.get_where('user_id', user_id)
@@ -53,6 +31,31 @@ def update_read_status(user_id):
         'status': 'OK',
         'message': 'is_read updated'
     })
+
+@notifications.route('/<user_id>', methods=['GET', 'PUT'], strict_slashes=False)
+def get_by_user_id(user_id):
+    """  """
+    if request.method == 'PUT':
+        return update_read_status(user_id)
+    try: 
+        results = Notification.get_where('user_id', user_id)
+    except:
+        results = []
+
+    results = list(map(lambda item: item.to_dict(), results))
+    for item in results:
+        b64_msg = item['msg']
+        b64_bytes = b64_msg.encode('ascii')
+        m_bytes = b64decode(b64_bytes)
+        message = m_bytes.decode('ascii')
+        item['msg'] = message
+        del item['_sa_instance_state']
+
+    return jsonify({
+        "status": "OK",
+        "results": results
+    })
+
 
 
 @notifications.route('/<notification_id>', methods=['DELETE'], strict_slashes=False)
