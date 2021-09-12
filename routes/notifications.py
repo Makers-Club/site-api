@@ -26,10 +26,10 @@ def get_by_user_id(user_id):
         "results": results
     })
 
-@notifications.route('/<notification_id>', methods=['PUT'], strict_slashes=False)
+@notifications.route('/<user_id>', methods=['PUT'], strict_slashes=False)
 @AuthAPI.trusted_client
-def update_read_status(notification_id):
-    n = Notification.get_by_id(notification_id)
+def update_read_status(user_id):
+    n = Notification.get_where('user_id', user_id)
     if not n:
         return jsonify({
             'status': 'error',
