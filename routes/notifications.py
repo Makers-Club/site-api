@@ -1,5 +1,5 @@
 from routes import notifications
-from flask import jsonify, request
+from flask import json, jsonify, request
 from models.notification import Notification
 from models.auth.authenticate_api_token import AuthAPI
 from base64 import b64decode
@@ -29,14 +29,26 @@ def get_by_user_id(user_id):
 @notifications.route('/<user_id>', methods=['PUT'], strict_slashes=False)
 @AuthAPI.trusted_client
 def update_read_status(user_id):
-    n = Notification.get_where('user_id', user_id)
+    try:
+        n = Notification.get_where('user_id', user_id)
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
     if not n:
         return jsonify({
             'status': 'error',
             'message': 'notification not found'
         }), 404
-    n.is_read = True
-    n.save()
+    try:
+        n.is_read = True
+        n.save()
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
     return jsonify({
         'status': 'OK',
         'message': 'is_read updated'
