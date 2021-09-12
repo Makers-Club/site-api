@@ -14,7 +14,7 @@ def update_read_status(user_id):
             'status': 'error',
             'message': str(e)
         })
-    if not n:
+    if not notifications:
         return jsonify({
             'status': 'error',
             'message': 'notification not found'
