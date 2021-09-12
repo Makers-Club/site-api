@@ -1,3 +1,4 @@
+from sqlalchemy.sql.functions import user
 from routes import notifications
 from flask import json, jsonify, request
 from models.notification import Notification
@@ -81,11 +82,24 @@ def index(notification_id):
 @notifications.route('/', methods=['POST'], strict_slashes=False)
 @AuthAPI.trusted_client
 def things():
-    data = request.args.to_dict()
-
-    data['msg'] = data['msg'].replace(' ', '+')
-    data['is_read'] = True if data['is_read'] == 'true' else False
-
+    msg = request.args.get('msg') or request.form.get('msg')
+    if not msg:
+        return jsonify({
+            'status': 'error',
+            'message': 'Must include msg in your request'
+        })
+    user_id = request.args.get('user_id') or request.form.get('user_id')
+    if not user_id:
+        return jsonify({
+            'status': 'error',
+            'message': 'Must include user_id in your request'
+        })
+    if ' ' in msg:
+        msg.replace(' ', '+')
+    data = {
+        'msg': msg.replace(' ', '+'),
+        'user_id': user_id,
+    }
     notification = Notification(**data)
     notification.save()
 
