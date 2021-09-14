@@ -41,17 +41,28 @@ def get_by_user_id(user_id):
         return update_read_status(user_id)
     try: 
         results = Notification.get_where('user_id', user_id)
-    except:
+    except Exception as e:
         results = []
 
-    results = list(map(lambda item: item.to_dict(), results))
-    for item in results:
-        b64_msg = item['msg']
-        b64_bytes = b64_msg.encode('ascii')
-        m_bytes = b64decode(b64_bytes)
-        message = m_bytes.decode('ascii')
-        item['msg'] = message
-        del item['_sa_instance_state']
+    if not results:
+        return jsonify({
+            'status': 'error',
+            'message': 'No results'
+        })
+    try:
+        results = list(map(lambda item: item.to_dict(), results))
+        for item in results:
+            b64_msg = item.msg
+            b64_bytes = b64_msg.encode('ascii')
+            m_bytes = b64decode(b64_bytes)
+            message = m_bytes.decode('ascii')
+            item.msg = message
+            del item['_sa_instance_state']
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e) + 'in here'
+        })
 
     return jsonify({
         "status": "OK",
