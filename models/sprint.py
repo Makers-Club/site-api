@@ -18,9 +18,8 @@ sprints_and_users = Table('sprints_and_users', declarative_base.metadata,
 
 class Sprint(Base, declarative_base):
     __tablename__ = 'sprints'
-    id = Column(String(128), nullable=False, primary_key=True)
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     description = Column(String(128))
-    number = Column(Integer)
     progress = Column(String(128), nullable=False)
     project_id = Column(String(128), ForeignKey('projects.id'))
     participants = relationship(
@@ -29,10 +28,9 @@ class Sprint(Base, declarative_base):
         back_populates="my_sprints")
 
     def __init__(self, *args, **kwargs):
-        super().__init__()  
+        super().__init__()
+        del self.id
         if kwargs:
-            self.id = str(uuid4())
-            self.number = kwargs.get('number')
             self.description = kwargs.get('description')
             self.progress = 0
             self.project_id = kwargs.get('project_id')

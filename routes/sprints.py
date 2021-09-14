@@ -21,8 +21,10 @@ def create_sprint():
         })
     from models.projects import Project
     if request.form:
+        print('*****', request.form, '\n\n')
         sprint = Sprint(**request.form)
     else:
+        print('*****', request.args, '\n\n')
         sprint = Sprint(**request.args)
     if not sprint:
         return jsonify({

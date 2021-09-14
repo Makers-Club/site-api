@@ -157,7 +157,7 @@ class Event(Base, db.Model):
     message = Column(String(512), nullable=False)
     user_handle = Column(String(128), nullable=True)
     user_link = Column(String(128), nullable=True)
-    sprint_name = Column(String(128), nullable=True)
+    sprint_number = Column(String(128), nullable=True)
     sprint_link = Column(String(128), nullable=True)
     project_name = Column(String(128), nullable=True)
     project_link = Column(String(128), nullable=True)
@@ -169,23 +169,47 @@ class Event(Base, db.Model):
         self.id = str(uuid4())
         self.user_handle = kwargs.get('user_handle')
         self.user_link = kwargs.get('user_link')
-        self.sprint_name = kwargs.get('sprint_name')
+        self.sprint_number = kwargs.get('sprint_number')
         self.sprint_link = kwargs.get('sprint_link')
         self.project_name = kwargs.get('project_name')
         self.project_link = kwargs.get('project_link')
         self.type = kwargs.get('type')
         self.message = self.build_message(kwargs)
-    
+
     @staticmethod
     def build_message(kwargs):
-        type = kwargs.get('type')
-        if type == 'PROJECT_STARTED':
+        msg_type = kwargs.get('type')
+        if msg_type == 'PROJECT_STARTED':
+            user_handle = kwargs.get('user_handle')
+            project_name = kwargs.get('project_name')
+            project_link = kwargs.get('project_link')
+            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> created a new project, <a class="event_project_name" href="{project_link}">{project_name}</a>'
+        if msg_type == 'SPRINT_STARTED':
+            user_handle = kwargs.get('user_handle')
+            user_link = kwargs.get('user_link')
+            sprint_number = kwargs.get('sprint_number')
+            sprint_link = kwargs.get('sprint_link')
+            project_name = kwargs.get('project_name')
+            project_link = kwargs.get('project_link')
+            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> started <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
+        if msg_type == 'NEW_USER':
+            user_handle = kwargs.get('user_handle')
+            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> joined Maker Teams! Welcome them.'
+        if msg_type == 'JOINED_SPRINT':
+            user_handle = kwargs.get('user_handle')
+            user_link = kwargs.get('user_link')
+            sprint_number = kwargs.get('sprint_number')
+            sprint_link = kwargs.get('sprint_link')
+            project_name = kwargs.get('project_name')
+            project_link = kwargs.get('project_link')
+            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> joined <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
+        if msg_type == 'GAVE_PROJECT_FEEDBACK':
             user_handle = kwargs.get('user_handle')
             user_link = kwargs.get('user_link')
             project_name = kwargs.get('project_name')
             project_link = kwargs.get('project_link')
-            message = f'<a class="event_user_handle" href="{user_link}">{user_handle}</a> created a new project, <a class="event_project_name" href="{project_link}">{project_name}</a>'
-            return message
+            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> gave feedback on <a class="event_project_name" href="{project_link}">{project_name}</a>'
+
 
 sprints_and_users = Table('sprints_and_users', db.Model.metadata,
     Column('users_id', ForeignKey('users.id'), primary_key=True),
@@ -194,9 +218,8 @@ sprints_and_users = Table('sprints_and_users', db.Model.metadata,
 
 class Sprint(Base, db.Model):
     __tablename__ = 'sprints'
-    id = Column(String(128), nullable=False, primary_key=True)
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     description = Column(String(128))
-    number = Column(Integer)
     progress = Column(String(128), nullable=False)
     project_id = Column(String(128), ForeignKey('projects.id'))
     participants = relationship(
@@ -206,9 +229,8 @@ class Sprint(Base, db.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__()  
+        del self.id
         if kwargs:
-            self.id = kwargs.get('id') # or str(uuid4())
-            self.number = kwargs.get('number')
             self.description = kwargs.get('description')
             self.progress = 0
             self.project_id = kwargs.get('project')
