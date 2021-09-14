@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, String, Boolean
+from sqlalchemy import Column, String, Boolean, Integer
 from sqlalchemy.sql.expression import null
 from models.base import declarative_base, Base
 from uuid import uuid4
@@ -7,7 +7,7 @@ from uuid import uuid4
 
 class Event(Base, declarative_base):
     __tablename__ = 'events'
-    id = Column(String(128), primary_key=True)
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     message = Column(String(512), nullable=False)
     user_handle = Column(String(128), nullable=True)
     user_link = Column(String(128), nullable=True)
@@ -20,7 +20,7 @@ class Event(Base, declarative_base):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.id = str(uuid4())
+        del self.id
         self.user_handle = kwargs.get('user_handle')
         self.user_link = kwargs.get('user_link')
         self.sprint_number = kwargs.get('sprint_number')

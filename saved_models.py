@@ -153,7 +153,7 @@ class Notification(Base, db.Model):
 
 class Event(Base, db.Model):
     __tablename__ = 'events'
-    id = Column(String(128), primary_key=True)
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     message = Column(String(512), nullable=False)
     user_handle = Column(String(128), nullable=True)
     user_link = Column(String(128), nullable=True)
@@ -166,7 +166,7 @@ class Event(Base, db.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.id = str(uuid4())
+        del self.id
         self.user_handle = kwargs.get('user_handle')
         self.user_link = kwargs.get('user_link')
         self.sprint_number = kwargs.get('sprint_number')
