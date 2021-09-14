@@ -37,9 +37,10 @@ def create_new_project(request):
         'user_handle': project.owner_handle,
         'user_link': '127.0.0.1:8080/users/' + project.owner_handle,
         'project_name': project.name,
-        'project_link': 'google',
+        'project_link': f'/projects/{project.id}',
         'type': 'PROJECT_STARTED'
     }
+    print(event_data)
     project_creation_event = Event(**event_data)
     project_creation_event.save()
     del project_dict['_sa_instance_state']

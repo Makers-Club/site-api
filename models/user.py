@@ -14,6 +14,9 @@ users_and_projects = Table('association', declarative_base.metadata,
     Column('projects_id', ForeignKey('projects.id'), primary_key=True)
 )
 
+from models.sprint import sprints_and_users
+
+
 class User(Base, declarative_base):
     __tablename__ = 'users'
     id = Column(String(128), primary_key=True)
@@ -28,6 +31,10 @@ class User(Base, declarative_base):
         "Project",
         secondary=users_and_projects,
         back_populates="my_users")
+    my_sprints = relationship(
+        "Sprint",
+        secondary=sprints_and_users,
+        back_populates="participants")
     #teams = to_many("Team", "users")
     #roles_seeking = to_many("Role", "users")
     interests = Column(String(256), nullable=True)

@@ -34,6 +34,7 @@ app.register_blueprint(sessions)
 app.register_blueprint(projects)
 app.register_blueprint(notifications)
 app.register_blueprint(events)
+app.register_blueprint(sprints)
 
 
 

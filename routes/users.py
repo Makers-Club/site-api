@@ -218,7 +218,17 @@ def create_new_user(request):
         }), 400
     new_user.save()
     print('saved new user')
-    del new_user._sa_instance_state
+    from models.events import Event
+    data = {
+        'user_handle': new_user.handle,
+        'type': 'NEW_USER'
+    }
+    new_event = Event(**data)
+    new_event.save()
+    try:
+        del new_user._sa_instance_state
+    except:
+        pass
     from models.auth.token import Token
     new_token = Token(new_user.id, new_user.access_token)
     new_token.save()

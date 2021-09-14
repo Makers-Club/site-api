@@ -15,7 +15,7 @@ def to_one(parent_dot_id_str, data_type, len=None):
 )'''
 from models.user import users_and_projects
 
-        
+   
 
 class Project(Base, declarative_base):
     __tablename__ = 'projects'

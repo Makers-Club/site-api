@@ -48,6 +48,9 @@ class Role(Base, db.Model):
     id = Column(String(128), primary_key=True)
 '''
 
+from models.sprint import sprints_and_users
+
+
 class User(Base, db.Model):
     __tablename__ = 'users'
     id = Column(String(128), primary_key=True)
@@ -62,13 +65,17 @@ class User(Base, db.Model):
         "Project",
         secondary=users_and_projects,
         back_populates="my_users")
+    my_sprints = relationship(
+        "Sprint",
+        secondary=sprints_and_users,
+        back_populates="participants")
     #teams = to_many("Team", "users")
     #roles_seeking = to_many("Role", "users")
     interests = Column(String(256), nullable=True)
     about_me = Column(String(256), nullable=True)
     culture = Column(String(256), nullable=True)
     title = Column(String(256), nullable=True)
-    roles_of_interest = Column(String(256), nullable=True)
+    roles_of_interest = Column(String(256), nullable=True)   
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -179,3 +186,29 @@ class Event(Base, db.Model):
             project_link = kwargs.get('project_link')
             message = f'<a class="event_user_handle" href="{user_link}">{user_handle}</a> created a new project, <a class="event_project_name" href="{project_link}">{project_name}</a>'
             return message
+
+sprints_and_users = Table('sprints_and_users', db.Model.metadata,
+    Column('users_id', ForeignKey('users.id'), primary_key=True),
+    Column('sprints_id', ForeignKey('sprints.id'), primary_key=True)
+)
+
+class Sprint(Base, db.Model):
+    __tablename__ = 'sprints'
+    id = Column(String(128), nullable=False, primary_key=True)
+    description = Column(String(128))
+    number = Column(Integer)
+    progress = Column(String(128), nullable=False)
+    project_id = Column(String(128), ForeignKey('projects.id'))
+    participants = relationship(
+        "User",
+        secondary=sprints_and_users,
+        back_populates="my_sprints")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()  
+        if kwargs:
+            self.id = kwargs.get('id') # or str(uuid4())
+            self.number = kwargs.get('number')
+            self.description = kwargs.get('description')
+            self.progress = 0
+            self.project_id = kwargs.get('project')
