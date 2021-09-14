@@ -41,6 +41,7 @@ def create_sprint():
         'project_name': sprint_project.name,
         'project_link': f'/projects/{sprint_project.id}',
         'sprint_link': f'/sprints/{sprint.id}',
+        'sprint_number': f'{sprint.id}',
         'type': 'SPRINT_STARTED'
     }
     print(event_data)
