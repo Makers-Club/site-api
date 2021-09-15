@@ -42,11 +42,13 @@ class Base():
     @classmethod
     def get_all(cls):
         from models.storage import DB
-        queries = [DB.get_all(cls) for x in range(10)]
+        '''queries = [DB.get_all(cls) for x in range(10)]
         for q in queries:
             if q:
                 return q
-        raise Exception(DB)
+        raise Exception(DB)'''
+        all = DB.get_all(cls)
+        return all
     
     @classmethod
     def get_where(cls, attribute, value):
@@ -89,7 +91,6 @@ class Base():
         return self.__dict__
     
     def update(self, **obj):
-        print(obj)
         for attribute, value in obj.items():
             if attribute in self.__dict__:
                 if value and self.__dict__[attribute]:

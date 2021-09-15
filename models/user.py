@@ -9,7 +9,7 @@ def to_many(child_class_name, this_table_name):
 def to_one(parent_dot_id_str, data_type, len=None):
     return Column(data_type(len), ForeignKey(parent_dot_id_str))
 
-users_and_projects = Table('association', declarative_base.metadata,
+users_and_projects = Table('users_and_projects', declarative_base.metadata,
     Column('users_id', ForeignKey('users.id'), primary_key=True),
     Column('projects_id', ForeignKey('projects.id'), primary_key=True)
 )

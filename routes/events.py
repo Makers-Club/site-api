@@ -23,7 +23,6 @@ def get_or_create_events():
                 'message': str(e) + 'TWO'
             })
         new_event.save()
-        print('in HERE')
         new_event = new_event.to_dict()
         del new_event['_sa_instance_state']
         return jsonify({

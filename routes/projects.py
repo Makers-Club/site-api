@@ -33,12 +33,21 @@ def create_new_project(request):
         }), 400
     project.save()
     project_dict = project.to_dict()
+    from models.user import User
+    project_owner = User.get_by_handle(project.owner_handle)
+    if not project_owner:
+        return jsonify({
+            'status': 'error',
+            'message': f'project owner not found'
+        }), 400
+    avatar_url = project_owner.avatar_url
     event_data = {
         'user_handle': project.owner_handle,
         'user_link': '127.0.0.1:8080/users/' + project.owner_handle,
         'project_name': project.name,
         'project_link': f'/projects/{project.id}',
-        'type': 'PROJECT_STARTED'
+        'type': 'PROJECT_STARTED',
+        'user_pic': avatar_url
     }
     print(event_data)
     project_creation_event = Event(**event_data)

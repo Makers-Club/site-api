@@ -16,7 +16,7 @@ class Event(Base, declarative_base):
     project_name = Column(String(128), nullable=True)
     project_link = Column(String(128), nullable=True)
     type = Column(String(128), nullable=True)
-
+    user_pic = Column(String(128), nullable=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -27,6 +27,7 @@ class Event(Base, declarative_base):
         self.sprint_link = kwargs.get('sprint_link')
         self.project_name = kwargs.get('project_name')
         self.project_link = kwargs.get('project_link')
+        self.user_pic = kwargs.get('user_pic')
         self.type = kwargs.get('type')
         self.message = self.build_message(kwargs)
 
@@ -37,7 +38,8 @@ class Event(Base, declarative_base):
             user_handle = kwargs.get('user_handle')
             project_name = kwargs.get('project_name')
             project_link = kwargs.get('project_link')
-            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> created a new project, <a class="event_project_name" href="{project_link}">{project_name}</a>'
+            user_pic = kwargs.get('user_pic')
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> created a new project, <a class="event_project_name" href="{project_link}">{project_name}</a>'
         if msg_type == 'SPRINT_STARTED':
             user_handle = kwargs.get('user_handle')
             user_link = kwargs.get('user_link')
@@ -45,10 +47,12 @@ class Event(Base, declarative_base):
             sprint_link = kwargs.get('sprint_link')
             project_name = kwargs.get('project_name')
             project_link = kwargs.get('project_link')
-            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> started <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
+            user_pic = kwargs.get('user_pic')
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> started <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
         if msg_type == 'NEW_USER':
             user_handle = kwargs.get('user_handle')
-            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> joined Maker Teams! Welcome them.'
+            user_pic = kwargs.get('user_pic')
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> joined Maker Teams! Welcome them.'
         if msg_type == 'JOINED_SPRINT':
             user_handle = kwargs.get('user_handle')
             user_link = kwargs.get('user_link')
@@ -56,11 +60,13 @@ class Event(Base, declarative_base):
             sprint_link = kwargs.get('sprint_link')
             project_name = kwargs.get('project_name')
             project_link = kwargs.get('project_link')
-            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> joined <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
+            user_pic = kwargs.get('user_pic')
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> joined <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
         if msg_type == 'GAVE_PROJECT_FEEDBACK':
             user_handle = kwargs.get('user_handle')
             user_link = kwargs.get('user_link')
             project_name = kwargs.get('project_name')
             project_link = kwargs.get('project_link')
-            return f'<a class="event_user_handle" href="/users/{user_handle}">{user_handle}</a> gave feedback on <a class="event_project_name" href="{project_link}">{project_name}</a>'
+            user_pic = kwargs.get('user_pic')
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> gave feedback on <a class="event_project_name" href="{project_link}">{project_name}</a>'
 

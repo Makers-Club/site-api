@@ -28,11 +28,8 @@ class Sprint(Base, declarative_base):
         back_populates="my_sprints")
 
     def __init__(self, *args, **kwargs):
-        super().__init__()
-        del self.id
         if kwargs:
+            print('\nSPRINT KWARGS\n\t', kwargs, '\n')
             self.description = kwargs.get('description')
             self.progress = 0
             self.project_id = kwargs.get('project_id')
-
-

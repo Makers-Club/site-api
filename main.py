@@ -43,6 +43,7 @@ def before():
     from models.auth.authenticate_api_token import AuthAPI
     from flask import request
     request.client, request.permission = AuthAPI.trusted(request)
+    print('CLIENT = \n\t', request.client, '\n')
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)

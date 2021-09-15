@@ -44,9 +44,9 @@ class MySQLClient():
 
     def get_all(self, cls):
         try:
-            return self.__session.query(cls).all()
-            
-        except:
+            x = self.__session.query(cls).all()
+            return x
+        except Exception as e:
             self.__session.rollback()
             return None
         
