@@ -24,6 +24,7 @@ class Project(Base, declarative_base):
     repository_link = Column(String(128), nullable=True)
     repository_name = Column(String(128), nullable=True)
     owner_handle = Column(String(128), nullable=True)
+    user_pic = Column(String(128), nullable=True)
     my_users = relationship(
         "User",
         secondary=users_and_projects,
@@ -37,6 +38,7 @@ class Project(Base, declarative_base):
             self.repository_link = kwargs.get('repository_link')
             self.repository_name = kwargs.get('repository_name')
             self.owner_handle = kwargs.get('owner_handle')
+            self.user_pic = kwargs.get('user_pic')
         else:
             print(args.get('name'))
     

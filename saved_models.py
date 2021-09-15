@@ -98,9 +98,9 @@ class Project(Base, db.Model):
     __tablename__ = 'projects'
     id = Column(String(128), primary_key=True)
     name = Column(String(128), nullable=True)
-    repository_link = Column(String(128), nullable=True)
     repository_name = Column(String(128), nullable=True)
     owner_handle = Column(String(128), nullable=True)   
+    user_pic = Column(String(128), nullable=True)   
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.id = str(uuid4())
@@ -108,6 +108,8 @@ class Project(Base, db.Model):
         self.repository_link = kwargs.get('repository_link')
         self.repository_name = kwargs.get('repository_name')
         self.owner_handle = kwargs.get('owner_handle')
+        self.user_pic = kwargs.get('user_pic')
+
     
 
 

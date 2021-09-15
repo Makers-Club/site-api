@@ -232,7 +232,10 @@ def create_new_user(request):
     from models.auth.token import Token
     new_token = Token(new_user.id, new_user.access_token)
     new_token.save()
-    del new_token._sa_instance_state
+    try:
+        del new_token._sa_instance_state
+    except:
+        pass
     return jsonify({
         'status': 'OK',
         'user': new_user.to_dict()
