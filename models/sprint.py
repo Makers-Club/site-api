@@ -26,6 +26,7 @@ class Sprint(Base, declarative_base):
         "User",
         secondary=sprints_and_users,
         back_populates="my_sprints")
+    complete = Column(Integer, nullable=False)
 
     def __init__(self, *args, **kwargs):
         if kwargs:
@@ -33,3 +34,4 @@ class Sprint(Base, declarative_base):
             self.description = kwargs.get('description')
             self.progress = 0
             self.project_id = kwargs.get('project_id')
+            self.complete = 0

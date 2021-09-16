@@ -99,8 +99,10 @@ class Project(Base, db.Model):
     id = Column(String(128), primary_key=True)
     name = Column(String(128), nullable=True)
     repository_name = Column(String(128), nullable=True)
+    repository_link = Column(String(128), nullable=True)
     owner_handle = Column(String(128), nullable=True)   
     user_pic = Column(String(128), nullable=True)   
+    complete = Column(Integer, nullable=False)
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.id = str(uuid4())
@@ -109,6 +111,7 @@ class Project(Base, db.Model):
         self.repository_name = kwargs.get('repository_name')
         self.owner_handle = kwargs.get('owner_handle')
         self.user_pic = kwargs.get('user_pic')
+        self.complete = 0
 
     
 
@@ -234,9 +237,11 @@ class Sprint(Base, db.Model):
         "User",
         secondary=sprints_and_users,
         back_populates="my_sprints")
+    complete = Column(Integer, nullable=False)
 
     def __init__(self, *args, **kwargs):
         if kwargs:
             self.description = kwargs.get('description')
             self.progress = 0
             self.project_id = kwargs.get('project_id')
+            self.complete = 0

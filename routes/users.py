@@ -85,7 +85,11 @@ def by_id(id=None, handle=None):
             if users_token:
                 users_token[0].delete()
         return delete_user(user)
-    del user._sa_instance_state
+    try:
+        print('1')
+        del user._sa_instance_state
+    except:
+        pass
     if not str(id) == request.client.client_id and not request.permission == 'admin':
         user = remove_private_user_data(user.to_dict())
     else:
@@ -102,7 +106,11 @@ def get_by_handle(handle):
             'status': 'error',
             'user': None
         }), 404
-    del user._sa_instance_state
+    try:
+        print('2')
+        del user._sa_instance_state
+    except:
+        pass
     from models.auth.token import Token
     client_id = request.client.client_id
     if client_id != user.id:
@@ -128,7 +136,11 @@ def by_attribute(attribute, value, new_value=None):
             }), 404
     user_dicts = []
     for user in users:
-        del user._sa_instance_state
+        try:
+            print('3')
+            del user._sa_instance_state
+        except:
+            pass
         user_dicts.append(user.to_dict())
     if not request.permission == 'admin':
         user_dicts = remove_private_user_data(1, user_dicts)
@@ -193,7 +205,11 @@ def update_attr(id, attribute, value):
     user = User(**user_dict)
     """
     user.save()
-    del user._sa_instance_state
+    try:
+        print('4')
+        del user._sa_instance_state
+    except:
+        pass
     return jsonify({
         'status': 'OK',
         'user': user.to_dict()
@@ -226,6 +242,7 @@ def create_new_user(request):
     new_event = Event(**data)
     new_event.save()
     try:
+        print('5')
         del new_user._sa_instance_state
     except:
         pass
@@ -233,6 +250,7 @@ def create_new_user(request):
     new_token = Token(new_user.id, new_user.access_token)
     new_token.save()
     try:
+        print('6')
         del new_token._sa_instance_state
     except:
         pass

@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Float, Integer, ForeignKey, Table
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import null
 from models.base import declarative_base, Base
 from uuid import uuid4
 
@@ -28,7 +29,8 @@ class Project(Base, declarative_base):
     my_users = relationship(
         "User",
         secondary=users_and_projects,
-        back_populates="my_projects")   
+        back_populates="my_projects") 
+    complete = Column(Integer, nullable=False)
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.id = str(uuid4())
@@ -39,6 +41,7 @@ class Project(Base, declarative_base):
             self.repository_name = kwargs.get('repository_name')
             self.owner_handle = kwargs.get('owner_handle')
             self.user_pic = kwargs.get('user_pic')
+            self.complete = 0
         else:
             print(args.get('name'))
     
