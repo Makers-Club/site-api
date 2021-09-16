@@ -237,6 +237,7 @@ def create_new_user(request):
     from models.events import Event
     data = {
         'user_handle': new_user.handle,
+        'user_pic': new_user.avatar_url
         'type': 'NEW_USER'
     }
     new_event = Event(**data)
