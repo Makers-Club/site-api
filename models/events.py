@@ -52,7 +52,7 @@ class Event(Base, declarative_base):
         if msg_type == 'NEW_USER':
             user_handle = kwargs.get('user_handle')
             user_pic = kwargs.get('user_pic')
-            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> joined Maker Teams! Welcome them.'
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> joined Maker Teams! Welcome them on slack! <a class="s_tiny" target="_blank" href="https://join.slack.com/t/makerteams/shared_invite/zt-vrynuzza-goE5OE4xrulkceQE0Mt3Hw"><img src="https://cdn.brandfolder.io/5H442O3W/at/pl546j-7le8zk-6gwiyo/Slack_Mark.svg"/></a>'
         if msg_type == 'JOINED_SPRINT':
             user_handle = kwargs.get('user_handle')
             user_link = kwargs.get('user_link')
