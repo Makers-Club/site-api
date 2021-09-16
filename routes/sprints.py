@@ -54,8 +54,39 @@ def create_sprint():
     }
     sprint_creation_event = Event(**event_data)
     sprint_creation_event.save()
-    del sprint_dict['_sa_instance_state']
+    try:
+        del sprint_dict['_sa_instance_state']
+    except:
+        pass
     return jsonify({
         'status': 'OK',
         f'sprint': sprint_dict
     }), 200
+
+
+@sprints.route('/<id>', methods=['PUT'], strict_slashes=False)
+def update_sprint(id):
+    sprint = Sprint.get_by_id(id)
+    if not sprint:
+        return jsonify({
+            'status': 'error',
+            'message': 'Sprint not found'
+        }), 404
+    data = request.form or request.args
+    try:
+        sprint.update(**data)
+        sprint.save()
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+    try:
+        del sprint._sa_instance_state
+    except:
+        pass
+    sprint_dict = sprint.to_dict()
+    return jsonify({
+        'status': 'OK',
+        'sprint': sprint_dict
+    })

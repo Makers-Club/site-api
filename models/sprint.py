@@ -1,5 +1,7 @@
+from enum import auto
 from sqlalchemy import Column, String, Float, Integer, ForeignKey, Table
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import null
 from models.base import declarative_base, Base
 from uuid import uuid4
 
