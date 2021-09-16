@@ -33,6 +33,7 @@ def create_new_project(request):
         }), 400
     project.save()
     project_dict = project.to_dict()
+    print("\n\nPROJECT DATA", project_dict)
     from models.user import User
     project_owner = User.get_by_handle(project.owner_handle)
     if not project_owner:
