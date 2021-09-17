@@ -49,6 +49,15 @@ class Event(Base, declarative_base):
             project_link = kwargs.get('project_link')
             user_pic = kwargs.get('user_pic')
             return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> started <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
+        if msg_type == 'SPRINT_COMPLETED':
+            user_handle = kwargs.get('user_handle')
+            user_link = kwargs.get('user_link')
+            sprint_number = kwargs.get('sprint_number')
+            sprint_link = kwargs.get('sprint_link')
+            project_name = kwargs.get('project_name')
+            project_link = kwargs.get('project_link')
+            user_pic = kwargs.get('user_pic')
+            return f'<a class="event_user_handle" href="/users/{user_handle}"> <img class="mr-3 profile_pic" height="22" width="22" src="{user_pic}"> {user_handle}</a> completed <a class="event_sprint_number" href="{sprint_link}">Sprint {sprint_number}</a> of <a class="event_project_name" href="{project_link}">{project_name}</a>'
         if msg_type == 'NEW_USER':
             user_handle = kwargs.get('user_handle')
             user_pic = kwargs.get('user_pic')

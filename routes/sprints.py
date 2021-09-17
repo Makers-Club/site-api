@@ -3,6 +3,7 @@ from routes import sprints
 from flask import json, request, jsonify
 from models.auth.authenticate_api_token import AuthAPI
 from models.events import Event
+from models.projects import Project
 
 
 
@@ -19,7 +20,6 @@ def create_sprint():
             'status': 'OK',
             'sprints': sprints
         })
-    from models.projects import Project
     if request.form:
         sprint = Sprint(**request.form)
     else:
@@ -76,6 +76,30 @@ def update_sprint(id):
     try:
         sprint.update(**data)
         sprint.save()
+        sprint_dict = sprint.to_dict()
+        print('\n\tSPRINT TO_DICT\n\t', sprint_dict, '\n')
+        sprint_project = Project.get_by_id(sprint.project_id)
+        print('SPRINT PROJECT:\n\t', sprint_project)
+        from models.user import User
+        project_owner = User.get_by_handle(sprint_project.owner_handle)
+        if not project_owner:
+            return jsonify({
+                'status': 'error',
+                'message': f'project owner not found'
+            }), 400
+        avatar_url = project_owner.avatar_url
+        event_data = {
+            'user_handle': sprint_project.owner_handle,
+            'user_link': '127.0.0.1:8080/users/' + sprint_project.owner_handle,
+            'project_name': sprint_project.name,
+            'project_link': f'/projects/{sprint_project.id}',
+            'sprint_link': f'/sprints/{sprint.id}',
+            'sprint_number': f'{sprint.id}',
+            'type': 'SPRINT_COMPLETED',
+            'user_pic': avatar_url
+        }
+        sprint_creation_event = Event(**event_data)
+        sprint_creation_event.save()
     except Exception as e:
         return jsonify({
             'status': 'error',
